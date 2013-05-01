@@ -1,0 +1,304 @@
+Fev 03, 2013 10:21:29 AM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Security(sec in test)
+	in:test.AddSubCalculator.test
+
+Fev 03, 2013 10:21:29 AM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Security(sec in test)
+	in:test.AddSubCalculator.test
+
+Fev 03, 2013 10:21:29 AM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Security(sec in test)
+	in:test.AddSubCalculator.test
+
+Fev 03, 2013 10:21:29 AM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Security(sec in test)
+	in:test.AddSubCalculator.test
+
+Fev 03, 2013 10:21:29 AM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Security(sec in test)
+	in:test.AddSubCalculator.test
+
+Fev 03, 2013 10:21:29 AM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-add, 1)
+	in: test.FullCalculator.add
+	Time: 13ms
+
+Fev 03, 2013 10:21:29 AM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-add, 1)
+	in: test.FullCalculator.add
+	Time: 24ms
+
+Fev 03, 2013 10:21:29 AM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-add, 1)
+	in: test.FullCalculator.add
+	Time: 34ms
+
+Fev 03, 2013 10:21:29 AM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-add, 1)
+	in: test.FullCalculator.add
+	Time: 135ms
+
+Fev 03, 2013 10:21:29 AM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-sub, 1)
+	in: test.FullCalculator.sub
+	Time: 10ms
+
+Fev 03, 2013 10:21:29 AM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Performance(PM-FullCalculator-mult, 0)
+	in: test.FullCalculator.mult
+	Time: 0ms
+
+Fev 03, 2013 10:21:29 AM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Reliability(reli, 0.5)
+	in:test.MultDivCalculator.div
+	Fail: true
+
+Fev 03, 2013 10:21:29 AM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Performance(PM-FullCalculator-div, 0)
+	in: test.FullCalculator.div
+	Time: 0ms
+
+Fev 03, 2013 10:27:04 AM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Security(sec in test)
+	in:test.AddSubCalculator.test
+
+Fev 03, 2013 10:27:04 AM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Security(sec in test)
+	in:test.AddSubCalculator.test
+
+Fev 03, 2013 10:27:04 AM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Security(sec in test)
+	in:test.AddSubCalculator.test
+
+Fev 03, 2013 10:27:04 AM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Security(sec in test)
+	in:test.AddSubCalculator.test
+
+Fev 03, 2013 10:27:04 AM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Security(sec in test)
+	in:test.AddSubCalculator.test
+
+Fev 03, 2013 10:27:04 AM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-add, 1)
+	in: test.FullCalculator.add
+	Time: 12ms
+
+Fev 03, 2013 10:27:04 AM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-add, 1)
+	in: test.FullCalculator.add
+	Time: 24ms
+
+Fev 03, 2013 10:27:04 AM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-add, 1)
+	in: test.FullCalculator.add
+	Time: 34ms
+
+Fev 03, 2013 10:27:04 AM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-add, 1)
+	in: test.FullCalculator.add
+	Time: 115ms
+
+Fev 03, 2013 10:27:04 AM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-sub, 1)
+	in: test.FullCalculator.sub
+	Time: 10ms
+
+Fev 03, 2013 10:27:04 AM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Performance(PM-FullCalculator-mult, 0)
+	in: test.FullCalculator.mult
+	Time: 0ms
+
+Fev 03, 2013 10:27:04 AM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Reliability(reli, 0.5)
+	in:test.MultDivCalculator.div
+	Fail: true
+
+Fev 03, 2013 10:27:04 AM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Performance(PM-FullCalculator-div, 0)
+	in: test.FullCalculator.div
+	Time: 0ms
+
+Fev 03, 2013 10:20:58 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Security(sec in test)
+	in:test.AddSubCalculator.test
+
+Fev 03, 2013 10:20:58 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Security(sec in test)
+	in:test.AddSubCalculator.test
+
+Fev 03, 2013 10:20:58 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Security(sec in test)
+	in:test.AddSubCalculator.test
+
+Fev 03, 2013 10:20:58 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Security(sec in test)
+	in:test.AddSubCalculator.test
+
+Fev 03, 2013 10:20:58 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Security(sec in test)
+	in:test.AddSubCalculator.test
+
+Fev 03, 2013 10:20:58 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-add, 1)
+	in: test.FullCalculator.add
+	Time: 3ms
+
+Fev 03, 2013 10:20:58 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-add, 1)
+	in: test.FullCalculator.add
+	Time: 7ms
+
+Fev 03, 2013 10:20:58 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-add, 1)
+	in: test.FullCalculator.add
+	Time: 10ms
+
+Fev 03, 2013 10:20:58 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-add, 1)
+	in: test.FullCalculator.add
+	Time: 122ms
+
+Fev 03, 2013 10:20:58 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-sub, 1)
+	in: test.FullCalculator.sub
+	Time: 2ms
+
+Fev 03, 2013 10:20:58 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Performance(PM-FullCalculator-mult, 0)
+	in: test.FullCalculator.mult
+	Time: 0ms
+
+Fev 03, 2013 10:20:58 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Reliability(reli, 0.5)
+	in:test.MultDivCalculator.div
+	Fail: true
+
+Fev 03, 2013 10:20:58 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-div, 0)
+	in: test.FullCalculator.div
+	Time: 7ms
+
+Fev 03, 2013 10:28:45 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Security(sec in test)
+	in:test.AddSubCalculator.test
+
+Fev 03, 2013 10:28:45 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Security(sec in test)
+	in:test.AddSubCalculator.test
+
+Fev 03, 2013 10:28:45 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Security(sec in test)
+	in:test.AddSubCalculator.test
+
+Fev 03, 2013 10:28:45 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Security(sec in test)
+	in:test.AddSubCalculator.test
+
+Fev 03, 2013 10:28:45 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Security(sec in test)
+	in:test.AddSubCalculator.test
+
+Fev 03, 2013 10:28:45 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-add, 1)
+	in: test.FullCalculator.add
+	Time: 4ms
+
+Fev 03, 2013 10:28:45 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-add, 1)
+	in: test.FullCalculator.add
+	Time: 8ms
+
+Fev 03, 2013 10:28:45 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-add, 1)
+	in: test.FullCalculator.add
+	Time: 13ms
+
+Fev 03, 2013 10:28:45 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-add, 1)
+	in: test.FullCalculator.add
+	Time: 124ms
+
+Fev 03, 2013 10:28:45 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-sub, 1)
+	in: test.FullCalculator.sub
+	Time: 3ms
+
+Fev 03, 2013 10:28:45 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Performance(PM-FullCalculator-mult, 0)
+	in: test.FullCalculator.mult
+	Time: 0ms
+
+Fev 03, 2013 10:28:45 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Reliability(reli, 0.5)
+	in:test.MultDivCalculator.div
+	Fail: true
+
+Fev 03, 2013 10:28:45 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-div, 0)
+	in: test.FullCalculator.div
+	Time: 7ms
+
+Fev 03, 2013 10:29:55 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Security(sec in test)
+	in:test.AddSubCalculator.test
+
+Fev 03, 2013 10:29:55 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Security(sec in test)
+	in:test.AddSubCalculator.test
+
+Fev 03, 2013 10:29:55 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Security(sec in test)
+	in:test.AddSubCalculator.test
+
+Fev 03, 2013 10:29:55 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Security(sec in test)
+	in:test.AddSubCalculator.test
+
+Fev 03, 2013 10:29:55 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Security(sec in test)
+	in:test.AddSubCalculator.test
+
+Fev 03, 2013 10:29:55 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-add, 1)
+	in: test.FullCalculator.add
+	Time: 4ms
+
+Fev 03, 2013 10:29:55 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-add, 1)
+	in: test.FullCalculator.add
+	Time: 7ms
+
+Fev 03, 2013 10:29:55 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-add, 1)
+	in: test.FullCalculator.add
+	Time: 10ms
+
+Fev 03, 2013 10:29:55 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-add, 1)
+	in: test.FullCalculator.add
+	Time: 115ms
+
+Fev 03, 2013 10:29:55 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-sub, 1)
+	in: test.FullCalculator.sub
+	Time: 2ms
+
+Fev 03, 2013 10:29:55 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-mult, 0)
+	in: test.FullCalculator.mult
+	Time: 1ms
+
+Fev 03, 2013 10:29:55 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Reliability(reli, 0.5)
+	in:test.MultDivCalculator.div
+	Fail: true
+
+Fev 03, 2013 10:29:55 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+WARNING: @Performance(PM-FullCalculator-div, 0)
+	in: test.FullCalculator.div
+	Time: 6ms
+
+Fev 03, 2013 11:37:28 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Security(security_login_registration)
+	in:br.com.ecommerce.jsf.registration.registrationManagement.RegistroMBean.cadastroInformacoesLogin
+

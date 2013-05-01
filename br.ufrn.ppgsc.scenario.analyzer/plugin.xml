@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	<extension point="org.eclipse.ui.popupMenus">
+		<objectContribution
+			objectClass="org.eclipse.core.resources.IProject"
+			id="br.ufrn.ppgsc.scenario.analyzer.contribution1"
+			adaptable="true">
+			
+			<menu
+				label="Scenario Analyzer"
+				path="additions"
+				id="br.ufrn.ppgsc.scenario.analyzer.menu1">
+				<separator name="group1" />
+			</menu>
+			
+			<action
+				label="Run"
+				class="br.ufrn.ppgsc.scenario.analyzer.actions.Action"
+				menubarPath="br.ufrn.ppgsc.scenario.analyzer.menu1/group1"
+				enablesFor="1"
+				id="br.ufrn.ppgsc.scenario.analyzer.action1">
+			</action>
+		</objectContribution>
+	</extension>
+	
+	<extension point="org.eclipse.ui.commands">
+		<category name="Scenario Analyzer Category"
+			id="br.ufrn.ppgsc.scenario.analyzer.category" />
+		
+		<command
+			name="Execute"
+			categoryId="br.ufrn.ppgsc.scenario.analyzer.category"
+			id="br.ufrn.ppgsc.scenario.analyzer.command" />
+	</extension>
+	
+	<extension point="org.eclipse.ui.handlers">
+		<handler
+			commandId="br.ufrn.ppgsc.scenario.analyzer.command"
+			class="br.ufrn.ppgsc.scenario.analyzer.handlers.Handler" />
+	</extension>
+	
+	<extension point="org.eclipse.ui.bindings">
+		<key
+			commandId="br.ufrn.ppgsc.scenario.analyzer.command"
+			contextId="org.eclipse.ui.contexts.window"
+			sequence="M1+6"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" />
+	</extension>
+
+	<extension point="org.eclipse.ui.menus">
+		<menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+			<menu label="Scenario Analyzer" mnemonic="M" id="br.ufrn.ppgsc.scenario.analyzer.menu">
+				<command
+					commandId="br.ufrn.ppgsc.scenario.analyzer.command"
+					mnemonic="S"
+					id="br.ufrn.ppgsc.scenario.analyzer.command" />
+			</menu>
+		</menuContribution>
+   </extension>
+</plugin>

@@ -1,0 +1,4 @@
+Mar 25, 2013 3:26:09 PM br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText execute
+INFO: @Security(security_login_registration)
+	in:br.com.ecommerce.jsf.registration.registrationManagement.RegistroMBean.cadastroInformacoesLogin
+

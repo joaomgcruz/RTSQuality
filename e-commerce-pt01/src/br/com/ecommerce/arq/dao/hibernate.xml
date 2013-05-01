@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!DOCTYPE hibernate-configuration PUBLIC  
+ "-//Hibernate/Hibernate Configuration DTD 3.0//EN" 
+ "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd"> 
+ 
+<hibernate-configuration> 
+	<session-factory> 
+  
+	<!-- properties -->
+	<!--  Configuracoes para conexao com o Banco de Dados -->
+	<property name="connection.driver_class">org.postgresql.Driver</property> 
+ 	<property name="connection.url">jdbc:postgresql://localhost:5432/e-commerce</property> 
+	<property name="connection.username">postgres</property> 
+	<property name="connection.password">1234</property>
+	
+	<!-- JDBC pool of connections --> 
+ 	<property name="connection.pool_size">40</property> 
+
+	<!-- SQL dialect -->
+	<property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property> 
+	
+	<!-- Echo all executed SQL to stdout -->
+	<property name="show_sql">true</property> 
+
+	<!-- mapping classes -->
+ 	<mapping class="br.com.ecommerce.dominio.produto.CampoExtraProduto"/>
+	<mapping class="br.com.ecommerce.dominio.produto.DisponibilidadeProduto"/>
+	<mapping class="br.com.ecommerce.dominio.produto.Produto"/>
+	<mapping class="br.com.ecommerce.dominio.produto.SubTipoProduto"/>
+	<mapping class="br.com.ecommerce.dominio.produto.TipoCampoExtraProduto"/>	
+	<mapping class="br.com.ecommerce.dominio.produto.TipoProduto"/>
+	
+	<mapping class="br.com.ecommerce.dominio.usuario.Cidade"/>
+	
+<mapping class="br.com.ecommerce.dominio.usuario.CreditCard"/>
+
+	<mapping class="br.com.ecommerce.dominio.usuario.Endereco"/>
+	<mapping class="br.com.ecommerce.dominio.usuario.Estado"/>
+	<mapping class="br.com.ecommerce.dominio.usuario.Pessoa"/>
+	<mapping class="br.com.ecommerce.dominio.usuario.SecurityCard"/>
+	<mapping class= "br.com.ecommerce.dominio.usuario.Usuario"/>
+	
+	<mapping class="br.com.ecommerce.dominio.Mensagem"/>
+	
+	
+<mapping class="br.com.ecommerce.dominio.IntervaloServico"/>
+	<mapping class="br.com.ecommerce.dominio.DiaSemana"/>
+	<mapping class="br.com.ecommerce.dominio.TipoArmazenamento"/>
+
+	
+	
+<mapping class="br.com.ecommerce.dominio.PlanejamentoServico"/>
+
+	
+	
+<mapping class= "br.com.ecommerce.dominio.usuario.Demografico"/>
+ 
+	<mapping class="br.com.ecommerce.arq.dominio.RegistroEntrada"/>
+	<mapping class="br.com.ecommerce.arq.dominio.Parametro"/>
+	<mapping class="br.com.ecommerce.arq.dominio.ArquivoPersistente"/>
+	
+	
+<mapping class="br.com.ecommerce.dominio.Estoque"/>
+
+	<mapping class="br.com.ecommerce.action.annotation.PerformanceAnnotation"/>
+	<mapping class="br.com.ecommerce.action.annotation.SecurityAnnotation"/>
+	<mapping class="br.com.ecommerce.action.annotation.ReliabilityAnnotation"/>
+	
+	</session-factory> 
+</hibernate-configuration>
