@@ -19,7 +19,7 @@ public aspect AspectRobustness {
 			RuntimeRobustnessData runtime = new RuntimeRobustnessData();
 			runtime.setAnnotation(annotation);
 			runtime.setMethod(method);
-			runtime.setFail(false);
+			runtime.setFail(true);
 			
 			ActionAnnotationFactory.createActionAnnotation(Robustness.class).execute(runtime);
 		}
@@ -27,7 +27,7 @@ public aspect AspectRobustness {
 	
 	// pega exceções sem try-catch
 	@ScenarioIgnore
-	after() throwing(Throwable t) : execution(* *.*(..)) && @annotation(br.ufrn.ppgsc.scenario.analyzer.annotations.Robustness) {
+	after() throwing(Throwable t): execution(* *.*(..)) && @annotation(br.ufrn.ppgsc.scenario.analyzer.annotations.Robustness) {
 		Method method = ((MethodSignature) thisJoinPoint.getSignature()).getMethod();
 		Robustness annotation = method.getAnnotation(Robustness.class);
 		

@@ -31,8 +31,8 @@ public aspect AspectScenario {
 	
 	private static final Stack<Node> nodes_stack = new Stack<Node>();
 	
-	pointcut scenarioIgnored(): @annotation(br.ufrn.ppgsc.scenario.analyzer.d.aspects.ScenarioIgnore);
-	pointcut allExecution(): execution(* *.*(..)) && !within(AspectScenario);
+	pointcut scenarioIgnored(): within(AspectScenario) || @annotation(br.ufrn.ppgsc.scenario.analyzer.d.aspects.ScenarioIgnore);
+	pointcut allExecution(): execution(* *.*(..));
 	
 	Object around() : allExecution() && !scenarioIgnored() {
 		long begin, end;
@@ -81,10 +81,16 @@ public aspect AspectScenario {
 		setRobustness((MethodSignature) thisJoinPoint.getSignature());
 	}
 	
-	before(Throwable t): handler(Throwable+) && args(t) && allExecution() && !scenarioIgnored() {
+	before(Throwable t) : handler(Throwable+) && args(t) && !within(AspectScenario) {
 		setRobustness((MethodSignature) thisEnclosingJoinPointStaticPart.getSignature());
 	}
 	
+	/* TODO
+	 * Existem situações que a exceção aborda a execução do programa.
+	 * Nestes casos, o método abaixo deve sempre já gravar a falha,
+	 * enquanto o sistema ainda está em execução, pois quando o aspecto
+	 * desenvolver o sistema pode cair e perder as estruturas em memória
+	 * */
 	private static void setRobustness(MethodSignature ms) {
 		// se estiver vazia é porque o método não faz parte de cenário
 		if (!nodes_stack.empty()) {
