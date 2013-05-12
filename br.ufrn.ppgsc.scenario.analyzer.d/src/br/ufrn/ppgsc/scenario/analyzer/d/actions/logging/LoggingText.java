@@ -8,6 +8,7 @@ import br.ufrn.ppgsc.scenario.analyzer.d.aspects.ScenarioIgnore;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimePerformanceData;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeQAData;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeReliabilityData;
+import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeRobustnessData;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeSecurityData;
 
 public class LoggingText implements IActionAnnotation {
@@ -42,6 +43,15 @@ public class LoggingText implements IActionAnnotation {
 			
 			String log = "@Reliability(" + data.getAnnotation().name() + ", " +
 					data.getAnnotation().failure_rate() + ")\n\tin:" +
+					metadata.getMethod().getDeclaringClass().getName() + "." +
+					data.getMethod().getName() + "\n\tFail: " + data.isFail() + "\n";
+			
+			logger.info(log);
+		}
+		else if (metadata instanceof RuntimeRobustnessData) {
+			RuntimeRobustnessData data = (RuntimeRobustnessData) metadata;
+			
+			String log = "@Robustness(" + data.getAnnotation().name() + ")\n\tin:" +
 					metadata.getMethod().getDeclaringClass().getName() + "." +
 					data.getMethod().getName() + "\n\tFail: " + data.isFail() + "\n";
 			
