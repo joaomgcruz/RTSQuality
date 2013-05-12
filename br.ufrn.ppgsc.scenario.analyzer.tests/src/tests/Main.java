@@ -12,6 +12,13 @@ public class Main {
 	@Robustness(name="robustness_convert")
 	public int convertToInt(String str) {
 		try {
+			int a = 1 / 0;
+		}
+		catch (ArithmeticException e) {
+			
+		}
+		
+		try {
 			return Integer.parseInt(str);
 		} catch (NumberFormatException ex) {
 			return -1;
