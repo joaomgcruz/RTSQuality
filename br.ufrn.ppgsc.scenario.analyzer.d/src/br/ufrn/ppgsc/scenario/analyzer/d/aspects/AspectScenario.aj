@@ -13,7 +13,7 @@ import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeRobustnessData;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeCallGraph.Node;
 
 public aspect AspectScenario {
-
+	
 	/*
 	 * ter uma anotção de scenario é caso base para iniciar a construção da estrutura
 	 * cada vez que uma anotação de cenário é encontrada ela entra na lista de caminhos,
@@ -31,8 +31,10 @@ public aspect AspectScenario {
 	
 	private static final Stack<Node> nodes_stack = new Stack<Node>();
 	
-	@ScenarioIgnore
-	Object around() : execution(* *.*(..)) && !@annotation(br.ufrn.ppgsc.scenario.analyzer.d.aspects.ScenarioIgnore) {
+	pointcut scenarioIgnored(): @annotation(br.ufrn.ppgsc.scenario.analyzer.d.aspects.ScenarioIgnore);
+	pointcut allExecution(): execution(* *.*(..)) && !within(AspectScenario);
+	
+	Object around() : allExecution() && !scenarioIgnored() {
 		long begin, end;
 		
 		Method method = ((MethodSignature) thisJoinPoint.getSignature()).getMethod();
@@ -75,17 +77,14 @@ public aspect AspectScenario {
 		return o;
 	}
 	
-	@ScenarioIgnore
-	after() throwing(Throwable t) : execution(* *.*(..)) {
+	after() throwing(Throwable t) : allExecution() && !scenarioIgnored()  {
 		setRobustness((MethodSignature) thisJoinPoint.getSignature());
 	}
 	
-	@ScenarioIgnore
-	before(Throwable t): handler(Throwable+) && args(t) {
+	before(Throwable t): handler(Throwable+) && args(t) && allExecution() && !scenarioIgnored() {
 		setRobustness((MethodSignature) thisEnclosingJoinPointStaticPart.getSignature());
 	}
 	
-	@ScenarioIgnore
 	private static void setRobustness(MethodSignature ms) {
 		// se estiver vazia é porque o método não faz parte de cenário
 		if (!nodes_stack.empty()) {
