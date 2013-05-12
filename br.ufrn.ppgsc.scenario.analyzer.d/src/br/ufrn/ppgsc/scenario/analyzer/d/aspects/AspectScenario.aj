@@ -5,9 +5,11 @@ import java.util.Stack;
 
 import org.aspectj.lang.reflect.MethodSignature;
 
+import br.ufrn.ppgsc.scenario.analyzer.annotations.Robustness;
 import br.ufrn.ppgsc.scenario.analyzer.annotations.arq.Scenario;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.ExecutionPaths;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeCallGraph;
+import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeRobustnessData;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeCallGraph.Node;
 
 public aspect AspectScenario {
@@ -27,7 +29,7 @@ public aspect AspectScenario {
 	 * 
 	 */
 	
-	public static final Stack<Node> nodes_stack = new Stack<Node>();
+	private static final Stack<Node> nodes_stack = new Stack<Node>();
 	
 	@ScenarioIgnore
 	Object around() : execution(* *.*(..)) && !@annotation(br.ufrn.ppgsc.scenario.analyzer.d.aspects.ScenarioIgnore) {
@@ -38,13 +40,16 @@ public aspect AspectScenario {
 		
 		Node node = new Node(method);
 		
+		/*
+		 * Se achou a anotação de cenário, começa a criar as estruturas para ele
+		 */
 		if (ann_scenario != null) {
 			RuntimeCallGraph cg = new RuntimeCallGraph(ann_scenario.name(), node);
 			ExecutionPaths.getInstance().addRuntimeCallGraph(cg);
 		}
 		else if (nodes_stack.empty()) {
 			/*
-			 * se a pilha estiver vazia neste ponto é porque estamos executando
+			 * se a pilha estiver vazia e a anotação não existe neste ponto é porque estamos executando
 			 * um método que não faz parte de cenário algum (ou um cenário não anotado).
 			 * Como não está anotado, simplesmente liberamos a execução do método
 			 * e não fazemos nada.
@@ -52,6 +57,10 @@ public aspect AspectScenario {
 			return proceed();
 		}
 		
+		/*
+		 * Se já existe alguma coisa na pilha, então o método atual
+		 * foi invocado pelo último método que está na pilha
+		 */
 		if (!nodes_stack.empty())
 			nodes_stack.peek().addChild(node);
 		
@@ -64,6 +73,27 @@ public aspect AspectScenario {
 		nodes_stack.pop().setLastTime(end - begin);
 		
 		return o;
+	}
+	
+	@ScenarioIgnore
+	after() throwing(Throwable t) : execution(* *.*(..)) {
+		setRobustness((MethodSignature) thisJoinPoint.getSignature());
+	}
+	
+	@ScenarioIgnore
+	before(Throwable t): handler(Throwable+) && args(t) {
+		setRobustness((MethodSignature) thisEnclosingJoinPointStaticPart.getSignature());
+	}
+	
+	@ScenarioIgnore
+	private static void setRobustness(MethodSignature ms) {
+		// se estiver vazia é porque o método não faz parte de cenário
+		if (!nodes_stack.empty()) {
+			Node node = nodes_stack.peek();
+		
+			if (node.getMethod().equals(ms.getMethod()))
+				node.setFail(true);
+		}
 	}
 	
 }
