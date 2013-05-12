@@ -2,6 +2,7 @@ package tests;
 import java.io.IOException;
 
 import br.ufrn.ppgsc.scenario.analyzer.annotations.Robustness;
+import br.ufrn.ppgsc.scenario.analyzer.annotations.arq.Scenario;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.DataUtil;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.ExecutionPaths;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeCallGraph;
@@ -22,15 +23,16 @@ public class Main {
 		return a / b;
 	}
 
+	@Scenario(name="main")
 	public static void main(String[] args) throws IOException {
 		Main m = new Main();
 		
 		System.out.println(m.convertToInt("s10"));
 		
 		try {
-		System.out.println(m.divide(1, 0));
+			System.out.println(m.divide(1, 0));
 		} catch (ArithmeticException e) {
-			System.out.println("cought");
+			
 		}
 		
 		System.out.println("--------------------------------------------------");
