@@ -5,6 +5,7 @@ import java.lang.annotation.Annotation;
 
 import br.ufrn.ppgsc.scenario.analyzer.annotations.Performance;
 import br.ufrn.ppgsc.scenario.analyzer.annotations.Reliability;
+import br.ufrn.ppgsc.scenario.analyzer.annotations.Robustness;
 import br.ufrn.ppgsc.scenario.analyzer.annotations.Security;
 import br.ufrn.ppgsc.scenario.analyzer.d.aspects.ScenarioIgnore;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeCallGraph.Node;
@@ -31,7 +32,7 @@ public abstract class DataUtil {
 	
 	@ScenarioIgnore
 	private static void printTreeNode(Node root, String tabs, Appendable buffer) throws IOException {
-		buffer.append(tabs + "(" + root.getLastTime() + "ms) " + root.getMethod().getName());
+		buffer.append(tabs + "(" + root.getLastTime() + "ms, " + root.isFail() + ") " + root.getMethod().getName());
 		
 		Annotation annotation = root.getMethod().getAnnotation(Performance.class);
 		if (annotation != null)
@@ -44,6 +45,10 @@ public abstract class DataUtil {
 		annotation = root.getMethod().getAnnotation(Reliability.class);
 		if (annotation != null)
 			buffer.append("[Reliability: " + ((Reliability) annotation).name() + "]");
+		
+		annotation = root.getMethod().getAnnotation(Robustness.class);
+		if (annotation != null)
+			buffer.append("[Reliability: " + ((Robustness) annotation).name() + "]");
 		
 		buffer.append(System.lineSeparator());
 		

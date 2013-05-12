@@ -43,12 +43,14 @@ public class RuntimeCallGraph {
 	public static class Node {
 		private Method method;
 		private long lastTime;
+		private boolean fail;
 		private List<Node> children;
 		
 		public Node(Method method) {
 			this.method = method;
 			this.children = new ArrayList<Node>();
 			this.lastTime = 0;
+			this.fail = false;
 		}
 		
 		@ScenarioIgnore
@@ -79,6 +81,16 @@ public class RuntimeCallGraph {
 		@ScenarioIgnore
 		public void setLastTime(long lastTime) {
 			this.lastTime = lastTime;
+		}
+
+		@ScenarioIgnore
+		public boolean isFail() {
+			return fail;
+		}
+
+		@ScenarioIgnore
+		public void setFail(boolean fail) {
+			this.fail = fail;
 		}
 		
 	}

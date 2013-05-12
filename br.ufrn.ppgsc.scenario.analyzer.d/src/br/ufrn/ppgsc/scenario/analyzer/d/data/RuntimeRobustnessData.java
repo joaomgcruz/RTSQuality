@@ -5,6 +5,8 @@ import br.ufrn.ppgsc.scenario.analyzer.d.aspects.ScenarioIgnore;
 
 public class RuntimeRobustnessData extends RuntimeQAData<Robustness> {
 	
+	// TODO: Será que vale a pena armazenar informações sobre a exceção?
+	
 	private boolean fail;
 
 	@ScenarioIgnore
