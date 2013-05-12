@@ -6,6 +6,7 @@ import java.util.Map;
 
 import br.ufrn.ppgsc.scenario.analyzer.annotations.Performance;
 import br.ufrn.ppgsc.scenario.analyzer.annotations.Reliability;
+import br.ufrn.ppgsc.scenario.analyzer.annotations.Robustness;
 import br.ufrn.ppgsc.scenario.analyzer.annotations.Security;
 import br.ufrn.ppgsc.scenario.analyzer.d.actions.logging.LoggingText;
 
@@ -19,6 +20,7 @@ public abstract class ActionAnnotationFactory {
 		factory.put(Performance.class, LoggingText.class);
 		factory.put(Security.class, LoggingText.class);
 		factory.put(Reliability.class, LoggingText.class);
+		factory.put(Robustness.class, LoggingText.class);
 	}
 	
 	@ScenarioIgnore
