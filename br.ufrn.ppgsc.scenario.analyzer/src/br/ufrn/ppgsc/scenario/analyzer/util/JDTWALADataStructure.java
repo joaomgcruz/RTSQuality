@@ -135,6 +135,12 @@ public class JDTWALADataStructure {
 		System.out.println("listScenario.size() = " + listScenario.size());
 	}
 	
+	/* TODO
+	 * O index de métodos deve conter apenas os métodos presentes em algum cenário
+	 * - construir o índice enquanto é montado o grafo de chamadas
+	 * - este método pode ter o callback para indexar os métodos durante o processo:
+	 * - com.ibm.wala.client.AbstractAnalysisEngine.buildDefaultCallGraph()
+	 */
 	public void buildIndexes(IJavaProject project) {
 		ElementIndexer indexer = new ElementIndexer();
 		
