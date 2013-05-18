@@ -10,9 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
 
-import br.ufrn.ppgsc.scenario.analyzer.d.aspects.ScenarioIgnore;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.DataUtil;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.ExecutionPaths;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeCallGraph;
@@ -36,7 +34,6 @@ public class CGConsole extends JFrame {
 		add(button);
 		
 		button.addActionListener(new ActionListener() {
-			@ScenarioIgnore
 			public void actionPerformed(ActionEvent e) {
 				textArea.setText("");
 				
