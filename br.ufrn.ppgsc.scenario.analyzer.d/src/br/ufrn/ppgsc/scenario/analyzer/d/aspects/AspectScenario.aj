@@ -1,6 +1,8 @@
 package br.ufrn.ppgsc.scenario.analyzer.d.aspects;
 
 import java.lang.reflect.Method;
+import java.util.Hashtable;
+import java.util.Map;
 import java.util.Stack;
 
 import org.aspectj.lang.reflect.MethodSignature;
@@ -10,30 +12,39 @@ import br.ufrn.ppgsc.scenario.analyzer.d.data.ExecutionPaths;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeCallGraph;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeNode;
 
+/*
+ * Ter uma anotção de scenario é caso base para iniciar a construção da estrutura.
+ * Cada vez que uma anotação de cenário é encontrada ela entra na lista de caminhos,
+ * e todas as próximas invocações são subchamadas desse cenário.
+ * 
+ * Eu preciso interceptar tudo para pegar invocações dentro do cenário que nao estão
+ * anotadas, já que anotamos apenas o método root. O pointcut executionIgnored é usado
+ * para ignorar elementos definidos dentro da minha implementação que eventualmente são
+ * chamados pelo próprio aspecto e que não deviam ser interceptados, pois não são métodos da
+ * aplicação.
+ * 
+ * TODO: verificar o quanto as interceptações e operações feitas dentro dos aspectos estão
+ * influenciando negativamente na medição do tempo para executar um nó ou um cenário inteiro.
+ * 
+ * TODO: adaptar este aspecto para considerar também construtores, pois eles também podem
+ * invocar métodos e devem ser considerados na construção do grafo dinâmico.
+ * 
+ * TODO: por algum motivo se o cenário começa no método main, o tempo medido fica zero.
+ * 
+ * TODO: testar http://dev.eclipse.org/mhonarc/lists/aspectj-users/msg12554.html
+ * 
+ */
 public aspect AspectScenario {
 	
-	/*
-	 * ter uma anotção de scenario é caso base para iniciar a construção da estrutura
-	 * cada vez que uma anotação de cenário é encontrada ela entra na lista de caminhos,
-	 * pois todos as invocações são subchamadas desse cenário.
-	 * 
-	 * eu preciso interceptar tudo para pegar invocações dentro do cenário que nao estão
-	 * anotadas, já que anotamos apenas o método root, então criei uma anotação para ignorar
-	 * métodos usados pelo aspect que não deviam ser interceptados, pois não são métodos da
-	 * aplicação
-	 * 
-	 * o quanto as interceptações de performance, security e reliability influenciam na medição
-	 * do tempo para executar um nó ou um cenário inteiro?
-	 * 
-	 */
-	
-	private static final Stack<RuntimeNode> nodes_stack = new Stack<RuntimeNode>();
+	// Cada thread pode ter uma pilha de execução diferente
+	private final Map<Long, Stack<RuntimeNode>> thread_map = new Hashtable<Long, Stack<RuntimeNode>>();
 	
 	pointcut executionIgnored(): within(br.ufrn.ppgsc.scenario.analyzer..*);
 	pointcut allExecution(): execution(* *.*(..));
 	
 	Object around() : allExecution() && !executionIgnored() {
 		long begin, end;
+		Stack<RuntimeNode> nodes_stack = getOrCreateRuntimeNodeStack();
 		
 		Method method = ((MethodSignature) thisJoinPoint.getSignature()).getMethod();
 		Scenario ann_scenario = method.getAnnotation(Scenario.class);
@@ -48,11 +59,11 @@ public aspect AspectScenario {
 			ExecutionPaths.getInstance().addRuntimeCallGraph(cg);
 		}
 		else if (nodes_stack.empty()) {
-			/*
-			 * se a pilha estiver vazia e a anotação não existe neste ponto é porque estamos executando
-			 * um método que não faz parte de cenário algum (ou um cenário não anotado).
-			 * Como não está anotado, simplesmente liberamos a execução do método
-			 * e não fazemos nada.
+			/* TODO: o que fazer nesta situação?
+			 * Se a pilha estiver vazia e a anotação não existe neste ponto é porque
+			 * estamos em uma das sitações abaixo:
+			 * - Temos um método que não faz parte de cenário algum (ou um cenário não anotado).
+			 * - O cenário atual está dividindo sua execução em threads
 			 */
 			return proceed();
 		}
@@ -83,13 +94,26 @@ public aspect AspectScenario {
 		setRobustness(t, (MethodSignature) thisEnclosingJoinPointStaticPart.getSignature());
 	}
 	
-	/* TODO
-	 * Existem situações que a exceção aborda a execução do programa.
+	private Stack<RuntimeNode> getOrCreateRuntimeNodeStack() {
+		long thread_id = Thread.currentThread().getId();
+		Stack<RuntimeNode> nodes_stack = thread_map.get(thread_id);
+		
+		if (nodes_stack == null) {
+			nodes_stack = new Stack<RuntimeNode>();
+			thread_map.put(thread_id, nodes_stack);
+		}
+		
+		return nodes_stack;
+	}
+	
+	/* TODO: Existem situações que a exceção aborta a execução do programa.
 	 * Nestes casos, o método abaixo deve sempre já gravar a falha,
 	 * enquanto o sistema ainda está em execução, pois quando o aspecto
-	 * desenvolver o sistema pode cair e perder as estruturas em memória
+	 * devolver a execução o sistema pode cair e perder as estruturas em memória
 	 */
-	private static void setRobustness(Throwable t, MethodSignature ms) {
+	private void setRobustness(Throwable t, MethodSignature ms) {
+		Stack<RuntimeNode> nodes_stack = getOrCreateRuntimeNodeStack();
+		
 		// se estiver vazia é porque o método não faz parte de cenário
 		if (!nodes_stack.empty()) {
 			RuntimeNode node = nodes_stack.peek();

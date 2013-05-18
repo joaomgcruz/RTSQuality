@@ -11,7 +11,7 @@ import br.ufrn.ppgsc.scenario.analyzer.annotations.Security;
 public abstract class DataUtil {
 	
 	public static void printScenarioTree(RuntimeCallGraph tree, Appendable buffer) throws IOException {
-		buffer.append("Scenario: " + tree.getScenarioName() + "\n   ");
+		buffer.append("Scenario: " + tree.getScenarioName() + " (ID: " + tree.getThreadId() + ")\n   ");
 		printInOrder(tree.getRoot(), buffer);
 		buffer.append(System.lineSeparator());
 		printTreeNode(tree.getRoot(), "   ", buffer);

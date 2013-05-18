@@ -17,12 +17,16 @@ public class RuntimeCallGraph {
 		});
 	}
 
+	private Thread thread;
 	private RuntimeNode root;
 	private String scenario_name;
 
 	public RuntimeCallGraph(String scenario_name, RuntimeNode root) {
+		this.thread = Thread.currentThread();
 		this.root = root;
 		this.scenario_name = scenario_name;
+		
+		System.out.println("xxx: " + thread.getStackTrace()[thread.getStackTrace().length - 1]);
 	}
 
 	public String getScenarioName() {
@@ -31,6 +35,10 @@ public class RuntimeCallGraph {
 
 	public RuntimeNode getRoot() {
 		return root;
+	}
+	
+	public long getThreadId() {
+		return thread.getId();
 	}
 
 }

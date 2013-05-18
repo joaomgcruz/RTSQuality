@@ -1,4 +1,5 @@
 package tests;
+
 import java.io.IOException;
 
 import br.ufrn.ppgsc.scenario.analyzer.annotations.Robustness;

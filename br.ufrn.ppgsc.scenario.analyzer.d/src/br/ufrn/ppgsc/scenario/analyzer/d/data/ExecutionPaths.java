@@ -2,6 +2,7 @@ package br.ufrn.ppgsc.scenario.analyzer.d.data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 public class ExecutionPaths {
 
@@ -10,7 +11,7 @@ public class ExecutionPaths {
 	private List<RuntimeCallGraph> cg_list;
 
 	private ExecutionPaths() {
-		cg_list = new ArrayList<RuntimeCallGraph>();
+		cg_list = new Vector<RuntimeCallGraph>();
 	}
 
 	public static ExecutionPaths getInstance() {
@@ -19,6 +20,10 @@ public class ExecutionPaths {
 	
 	public void addRuntimeCallGraph(RuntimeCallGraph cg) {
 		cg_list.add(cg);
+	}
+	
+	public RuntimeCallGraph getLastRuntimeCallGraph() {
+		return cg_list.get(cg_list.size() - 1);
 	}
 
 	public RuntimeCallGraph[] getAllRuntimeCallGraph() {
