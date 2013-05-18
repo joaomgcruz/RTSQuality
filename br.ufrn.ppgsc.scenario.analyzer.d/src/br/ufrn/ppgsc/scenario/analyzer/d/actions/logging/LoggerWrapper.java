@@ -5,8 +5,6 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import br.ufrn.ppgsc.scenario.analyzer.d.aspects.ScenarioIgnore;
-
 public abstract class LoggerWrapper {
 
 	static {
@@ -24,7 +22,6 @@ public abstract class LoggerWrapper {
 		Logger.getLogger("br").addHandler(fh);
 	}
 
-	@ScenarioIgnore
 	public static Logger getInstance(String name) {
 		return Logger.getLogger(name);
 	}
