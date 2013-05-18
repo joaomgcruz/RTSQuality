@@ -30,6 +30,7 @@ import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.callgraph.CallGraph;
 import com.ibm.wala.types.TypeName;
+import com.ibm.wala.util.strings.Atom;
 
 
 public abstract class ScenarioAnalyzerUtil {
@@ -175,8 +176,13 @@ public abstract class ScenarioAnalyzerUtil {
 	public static String getStandartMethodSignature(IMethod method) {
 		StringBuffer result = new StringBuffer();
 		
-		result.append(method.getDeclaringClass().getName().getPackage().toString().replaceAll("/", "."));
-		result.append(".");
+		// O pacote do método será null se ele estiver no pacote padrão
+		Atom methodPackage = method.getDeclaringClass().getName().getPackage();
+		if (methodPackage != null) {
+			result.append(method.getDeclaringClass().getName().getPackage().toString().replaceAll("/", "."));
+			result.append(".");
+		}
+		
 		result.append(method.getDeclaringClass().getName().getClassName());
 		result.append(".");
 		
