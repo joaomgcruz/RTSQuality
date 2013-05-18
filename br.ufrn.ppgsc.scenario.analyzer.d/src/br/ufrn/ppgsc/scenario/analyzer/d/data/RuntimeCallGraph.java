@@ -6,7 +6,9 @@ import br.ufrn.ppgsc.scenario.analyzer.d.gui.CGConsole;
 
 public class RuntimeCallGraph {
 
-	// TODO: Ver como retirar este código daqui depois
+	/* TODO: Ver como retirar este código daqui depois
+	 * Posso criar um arquivo jsp para visualizar as informações do grafo
+	 */
 	static {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
