@@ -23,7 +23,6 @@ public abstract class ActionAnnotationFactory {
 		factory.put(Robustness.class, LoggingText.class);
 	}
 	
-	@ScenarioIgnore
 	public static IActionAnnotation createActionAnnotation(Class<? extends Annotation> cls_ann) {
 		try {
 			return (IActionAnnotation) factory.get(cls_ann).newInstance();
@@ -36,7 +35,6 @@ public abstract class ActionAnnotationFactory {
 		return null;
 	}
 	
-	@ScenarioIgnore
 	public static void setClass(Class<? extends Annotation> ann, Class<? extends IActionAnnotation> action) {
 		factory.put(ann, action);
 	}

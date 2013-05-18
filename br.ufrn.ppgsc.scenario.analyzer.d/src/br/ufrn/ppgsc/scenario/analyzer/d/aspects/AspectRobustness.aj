@@ -9,7 +9,6 @@ import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeRobustnessData;
 public aspect AspectRobustness {
 	
 	// dessa forma pega com try-catch
-	@ScenarioIgnore
 	before(Throwable t): handler(Throwable+) && args(t) {
 		Method method = ((MethodSignature) thisEnclosingJoinPointStaticPart.getSignature()).getMethod();
 		Robustness annotation = method.getAnnotation(Robustness.class);
@@ -26,7 +25,6 @@ public aspect AspectRobustness {
 	}
 	
 	// pega exceções sem try-catch
-	@ScenarioIgnore
 	after() throwing(Throwable t): execution(* *.*(..)) && @annotation(br.ufrn.ppgsc.scenario.analyzer.annotations.Robustness) {
 		Method method = ((MethodSignature) thisJoinPoint.getSignature()).getMethod();
 		Robustness annotation = method.getAnnotation(Robustness.class);

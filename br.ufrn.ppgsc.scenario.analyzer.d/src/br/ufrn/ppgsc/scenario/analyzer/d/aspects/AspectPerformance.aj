@@ -9,7 +9,6 @@ import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimePerformanceData;
 
 public aspect AspectPerformance {
 	
-	@ScenarioIgnore
 	Object around() : execution(* *.*(..)) && @annotation(br.ufrn.ppgsc.scenario.analyzer.annotations.Performance) {
 		long begin, end;
 		

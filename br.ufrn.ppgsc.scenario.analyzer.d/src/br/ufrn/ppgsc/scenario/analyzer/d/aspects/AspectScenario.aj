@@ -5,11 +5,9 @@ import java.util.Stack;
 
 import org.aspectj.lang.reflect.MethodSignature;
 
-import br.ufrn.ppgsc.scenario.analyzer.annotations.Robustness;
 import br.ufrn.ppgsc.scenario.analyzer.annotations.arq.Scenario;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.ExecutionPaths;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeCallGraph;
-import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeRobustnessData;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeCallGraph.Node;
 
 public aspect AspectScenario {
@@ -31,10 +29,10 @@ public aspect AspectScenario {
 	
 	private static final Stack<Node> nodes_stack = new Stack<Node>();
 	
-	pointcut scenarioIgnored(): within(AspectScenario) || @annotation(br.ufrn.ppgsc.scenario.analyzer.d.aspects.ScenarioIgnore);
+	pointcut executionIgnored(): within(br.ufrn.ppgsc.scenario.analyzer..*);
 	pointcut allExecution(): execution(* *.*(..));
 	
-	Object around() : allExecution() && !scenarioIgnored() {
+	Object around() : allExecution() && !executionIgnored() {
 		long begin, end;
 		
 		Method method = ((MethodSignature) thisJoinPoint.getSignature()).getMethod();
@@ -72,17 +70,17 @@ public aspect AspectScenario {
 		Object o = proceed();
 		end = System.currentTimeMillis();
 		
-		nodes_stack.pop().setLastTime(end - begin);
+		nodes_stack.pop().setTime(end - begin);
 		
 		return o;
 	}
 	
-	after() throwing(Throwable t) : allExecution() && !scenarioIgnored()  {
-		setRobustness((MethodSignature) thisJoinPoint.getSignature());
+	after() throwing(Throwable t) : allExecution() && !executionIgnored()  {
+		setRobustness(t, (MethodSignature) thisJoinPoint.getSignature());
 	}
 	
-	before(Throwable t) : handler(Throwable+) && args(t) && !within(AspectScenario) {
-		setRobustness((MethodSignature) thisEnclosingJoinPointStaticPart.getSignature());
+	before(Throwable t) : handler(Throwable+) && args(t) && !executionIgnored() {
+		setRobustness(t, (MethodSignature) thisEnclosingJoinPointStaticPart.getSignature());
 	}
 	
 	/* TODO
@@ -90,14 +88,15 @@ public aspect AspectScenario {
 	 * Nestes casos, o método abaixo deve sempre já gravar a falha,
 	 * enquanto o sistema ainda está em execução, pois quando o aspecto
 	 * desenvolver o sistema pode cair e perder as estruturas em memória
-	 * */
-	private static void setRobustness(MethodSignature ms) {
+	 */
+	private static void setRobustness(Throwable t, MethodSignature ms) {
 		// se estiver vazia é porque o método não faz parte de cenário
 		if (!nodes_stack.empty()) {
 			Node node = nodes_stack.peek();
 		
+			// Testa se foi o método que capturou ou lançou a exceção
 			if (node.getMethod().equals(ms.getMethod()))
-				node.setFail(true);
+				node.setException(t);
 		}
 	}
 	

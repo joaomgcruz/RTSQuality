@@ -10,11 +10,9 @@ import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeReliabilityData;
 public aspect AspectReliability {
 	
 	/*
-	 * Atualmente a métrica para failure_rate não está sendo calculado, portanto
+	 * TODO: Atualmente a métrica para failure_rate não está sendo calculado, portanto
 	 * podemos apenas identificar os cenários com este atributo de qualidade
 	 */
-	
-	@ScenarioIgnore
 	after() : execution(* *.*(..)) && @annotation(br.ufrn.ppgsc.scenario.analyzer.annotations.Reliability) {
 		Method method = ((MethodSignature) thisJoinPoint.getSignature()).getMethod();
 		Reliability annotation = method.getAnnotation(Reliability.class);
