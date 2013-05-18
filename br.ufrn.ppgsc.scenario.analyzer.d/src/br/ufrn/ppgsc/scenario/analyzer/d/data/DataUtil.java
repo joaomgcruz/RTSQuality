@@ -7,7 +7,6 @@ import br.ufrn.ppgsc.scenario.analyzer.annotations.Performance;
 import br.ufrn.ppgsc.scenario.analyzer.annotations.Reliability;
 import br.ufrn.ppgsc.scenario.analyzer.annotations.Robustness;
 import br.ufrn.ppgsc.scenario.analyzer.annotations.Security;
-import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeCallGraph.Node;
 
 public abstract class DataUtil {
 	
@@ -18,16 +17,16 @@ public abstract class DataUtil {
 		printTreeNode(tree.getRoot(), "   ", buffer);
 	}
 	
-	private static void printInOrder(Node root, Appendable buffer) throws IOException {
+	private static void printInOrder(RuntimeNode root, Appendable buffer) throws IOException {
 		buffer.append(root.getMethod().getName());
 		
-		for (Node node : root.getChildren()) {
+		for (RuntimeNode node : root.getChildren()) {
 			buffer.append(" > ");
 			printInOrder(node, buffer);
 		}
 	}
 	
-	private static void printTreeNode(Node root, String tabs, Appendable buffer) throws IOException {
+	private static void printTreeNode(RuntimeNode root, String tabs, Appendable buffer) throws IOException {
 		buffer.append(tabs + "(" + root.getTime() + "ms, " +
 				(root.getException() == null ? false : true) + ") " + root.getMethod().getName());
 		
@@ -49,7 +48,7 @@ public abstract class DataUtil {
 		
 		buffer.append(System.lineSeparator());
 		
-		for (Node node : root.getChildren()) {
+		for (RuntimeNode node : root.getChildren()) {
 			printTreeNode(node, tabs + "   ", buffer);
 		}
 	}

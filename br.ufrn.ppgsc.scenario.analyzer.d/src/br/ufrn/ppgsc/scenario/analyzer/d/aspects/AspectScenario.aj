@@ -8,7 +8,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import br.ufrn.ppgsc.scenario.analyzer.annotations.arq.Scenario;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.ExecutionPaths;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeCallGraph;
-import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeCallGraph.Node;
+import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeNode;
 
 public aspect AspectScenario {
 	
@@ -27,7 +27,7 @@ public aspect AspectScenario {
 	 * 
 	 */
 	
-	private static final Stack<Node> nodes_stack = new Stack<Node>();
+	private static final Stack<RuntimeNode> nodes_stack = new Stack<RuntimeNode>();
 	
 	pointcut executionIgnored(): within(br.ufrn.ppgsc.scenario.analyzer..*);
 	pointcut allExecution(): execution(* *.*(..));
@@ -38,7 +38,7 @@ public aspect AspectScenario {
 		Method method = ((MethodSignature) thisJoinPoint.getSignature()).getMethod();
 		Scenario ann_scenario = method.getAnnotation(Scenario.class);
 		
-		Node node = new Node(method);
+		RuntimeNode node = new RuntimeNode(method);
 		
 		/*
 		 * Se achou a anotação de cenário, começa a criar as estruturas para ele
@@ -92,7 +92,7 @@ public aspect AspectScenario {
 	private static void setRobustness(Throwable t, MethodSignature ms) {
 		// se estiver vazia é porque o método não faz parte de cenário
 		if (!nodes_stack.empty()) {
-			Node node = nodes_stack.peek();
+			RuntimeNode node = nodes_stack.peek();
 		
 			// Testa se foi o método que capturou ou lançou a exceção
 			if (node.getMethod().equals(ms.getMethod()))

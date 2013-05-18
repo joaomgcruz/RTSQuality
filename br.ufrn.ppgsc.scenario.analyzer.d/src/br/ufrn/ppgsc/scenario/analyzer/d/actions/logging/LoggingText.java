@@ -51,7 +51,8 @@ public class LoggingText implements IActionAnnotation {
 			
 			String log = "@Robustness(" + data.getAnnotation().name() + ")\n\tin:" +
 					metadata.getMethod().getDeclaringClass().getName() + "." +
-					data.getMethod().getName() + "\n\tFail: " + data.isFail() + "\n";
+					data.getMethod().getName() + "\n\tFail: " +
+					(data.getException() == null ? false : true) + "\n";
 			
 			logger.info(log);
 		}

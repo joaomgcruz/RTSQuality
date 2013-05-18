@@ -18,7 +18,7 @@ public aspect AspectRobustness {
 			RuntimeRobustnessData runtime = new RuntimeRobustnessData();
 			runtime.setAnnotation(annotation);
 			runtime.setMethod(method);
-			runtime.setFail(true);
+			runtime.setException(t);
 			
 			ActionAnnotationFactory.createActionAnnotation(Robustness.class).execute(runtime);
 		}
@@ -32,7 +32,7 @@ public aspect AspectRobustness {
 		RuntimeRobustnessData runtime = new RuntimeRobustnessData();
 		runtime.setAnnotation(annotation);
 		runtime.setMethod(method);
-		runtime.setFail(true);
+		runtime.setException(t);
 		
 		ActionAnnotationFactory.createActionAnnotation(Robustness.class).execute(runtime);
 	}

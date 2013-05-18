@@ -4,16 +4,18 @@ import br.ufrn.ppgsc.scenario.analyzer.annotations.Robustness;
 
 public class RuntimeRobustnessData extends RuntimeQAData<Robustness> {
 	
-	// TODO: Será que vale a pena armazenar informações sobre a exceção?
-	
-	private boolean fail;
+	private Throwable exception;
 
-	public boolean isFail() {
-		return fail;
+	public RuntimeRobustnessData() {
+		exception = null;
+	}
+	
+	public Throwable getException() {
+		return exception;
 	}
 
-	public void setFail(boolean fail) {
-		this.fail = fail;
+	public void setException(Throwable exception) {
+		this.exception = exception;
 	}
 
 }
