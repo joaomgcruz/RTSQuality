@@ -1,0 +1,24 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+version = '1.0'
+
+repositories {
+	mavenCentral()
+}
+
+
+allprojects {
+    apply plugin: 'java'
+    version = '1.0'
+}
+
+project(':br.ufrn.ppgsc.scenario.analyzer.d') {
+    dependencies {
+        compile project(':br.ufrn.ppgsc.scenario.analyzer')
+    }
+}
+project(':br.ufrn.ppgsc.scenario.analyzer.tests') {
+    dependencies {
+        compile project(':br.ufrn.ppgsc.scenario.analyzer')
+    }
+}
