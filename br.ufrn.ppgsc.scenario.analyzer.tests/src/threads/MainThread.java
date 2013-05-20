@@ -40,7 +40,6 @@ public class MainThread {
 		}
 	}
 	
-	@Scenario(name="Main")
 	public static void main(String[] args) throws IOException {
 
 		new MyThread().start();

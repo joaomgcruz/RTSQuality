@@ -25,8 +25,6 @@ public class RuntimeCallGraph {
 		this.thread = Thread.currentThread();
 		this.root = root;
 		this.scenario_name = scenario_name;
-		
-		System.out.println("xxx: " + thread.getStackTrace()[thread.getStackTrace().length - 1]);
 	}
 
 	public String getScenarioName() {
