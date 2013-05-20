@@ -20,8 +20,8 @@ import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeNode;
  * Eu preciso interceptar tudo para pegar invocações dentro do cenário que nao estão
  * anotadas, já que anotamos apenas o método root. O pointcut executionIgnored é usado
  * para ignorar elementos definidos dentro da minha implementação que eventualmente são
- * chamados pelo próprio aspecto e que não deviam ser interceptados, pois não são métodos da
- * aplicação.
+ * chamados pelo próprio aspecto e que não deviam ser interceptados, pois não são métodos
+ * da aplicação.
  * 
  * TODO: verificar o quanto as interceptações e operações feitas dentro dos aspectos estão
  * influenciando negativamente na medição do tempo para executar um nó ou um cenário inteiro.
@@ -29,9 +29,11 @@ import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeNode;
  * TODO: adaptar este aspecto para considerar também construtores, pois eles também podem
  * invocar métodos e devem ser considerados na construção do grafo dinâmico.
  * 
- * TODO: por algum motivo se o cenário começa no método main, o tempo medido fica zero.
+ * TODO: ajeitar o cálculo do tempo, pois por algum motivo se o cenário começa no método
+ * main, o tempo medido fica zero.
  * 
- * TODO: testar http://dev.eclipse.org/mhonarc/lists/aspectj-users/msg12554.html
+ * TODO: limitação para quando o cenário já iniciou e o mesmo se divide em threads.
+ * Testar isso http://dev.eclipse.org/mhonarc/lists/aspectj-users/msg12554.html
  * 
  */
 public aspect AspectScenario {
@@ -44,9 +46,11 @@ public aspect AspectScenario {
 	
 	Object around() : allExecution() && !executionIgnored() {
 		long begin, end;
+		
 		Stack<RuntimeNode> nodes_stack = getOrCreateRuntimeNodeStack();
 		
 		Method method = ((MethodSignature) thisJoinPoint.getSignature()).getMethod();
+		
 		Scenario ann_scenario = method.getAnnotation(Scenario.class);
 		
 		RuntimeNode node = new RuntimeNode(method);
@@ -59,10 +63,10 @@ public aspect AspectScenario {
 			ExecutionPaths.getInstance().addRuntimeCallGraph(cg);
 		}
 		else if (nodes_stack.empty()) {
-			/* TODO: o que fazer nesta situação?
+			/* TODO: decidir o que fazer nesta situação?
 			 * Se a pilha estiver vazia e a anotação não existe neste ponto é porque
 			 * estamos em uma das sitações abaixo:
-			 * - Temos um método que não faz parte de cenário algum (ou um cenário não anotado).
+			 * - Temos um método que não faz parte de cenário anotado
 			 * - O cenário atual está dividindo sua execução em threads
 			 */
 			return proceed();
@@ -114,7 +118,7 @@ public aspect AspectScenario {
 	private void setRobustness(Throwable t, MethodSignature ms) {
 		Stack<RuntimeNode> nodes_stack = getOrCreateRuntimeNodeStack();
 		
-		// se estiver vazia é porque o método não faz parte de cenário
+		// Se estiver vazia é porque o método não faz parte de cenário
 		if (!nodes_stack.empty()) {
 			RuntimeNode node = nodes_stack.peek();
 		
