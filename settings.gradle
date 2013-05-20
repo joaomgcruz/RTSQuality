@@ -1,1 +1,0 @@
-include 'br.ufrn.ppgsc.scenario.analyzer' , 'br.ufrn.ppgsc.scenario.analyzer.d', 'br.ufrn.ppgsc.scenario.analyzer.tests'
