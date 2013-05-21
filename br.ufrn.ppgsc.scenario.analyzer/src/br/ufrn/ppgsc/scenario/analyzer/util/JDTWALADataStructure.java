@@ -18,6 +18,8 @@ import br.ufrn.ppgsc.scenario.analyzer.data.ScenarioData;
 import br.ufrn.ppgsc.scenario.analyzer.processors.impl.ElementIndexer;
 
 import com.ibm.wala.cast.java.client.JDTJavaSourceAnalysisEngine;
+import com.ibm.wala.classLoader.IClass;
+import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.client.AbstractAnalysisEngine;
 import com.ibm.wala.ide.util.EclipseFileProvider;
 import com.ibm.wala.ipa.callgraph.AnalysisScope;
@@ -36,7 +38,7 @@ public class JDTWALADataStructure {
 	private String version;
 	
 	/* TODO
-	 * Reusei o pair do wala, ver implicaões disso!
+	 * Reusei o pair do wala, ver implicações disso!
 	 */
 	private Map<String, Pair<MethodData, CGNode>> indexMethod;
 	private Map<String, List<Annotation>> indexAnnotation;
@@ -59,20 +61,123 @@ public class JDTWALADataStructure {
 	public String getVersion() {
 		return version;
 	}
+	
+	/**
+	 * Popula as classes filhas de classData com os métodos herdados
+	 * @param classData
+	 */
+	private void populateInheritedMethods(ClassData classData){
+		for(ClassData childClassData : classData.getChildrenClasses()){
+			List<Pair<MethodData,CGNode>> allMethods = new ArrayList<Pair<MethodData,CGNode>>();
+			childClassData.inicializarInheritedMethods(classData.getAllMethods().size());
+			for(MethodData methodData : classData.getAllMethods()){
+				CGNode node = getMethodNodeFromIndex(methodData.getSignature()); //O CGNode continua sendo o mesmo da classe pai
+				if(!methodData.isInit()){
+					try {
+						MethodData childMethodData = methodData.clone();
+						String signature = new String(childClassData.getClassPackage() + "." + childClassData.getName() + "." + childMethodData.getPartialSignature());
+						childMethodData.setSignature(signature);
+						childMethodData.setDeclaringClass(childClassData);
+						allMethods.add(Pair.make(childMethodData,node));
+					} catch (CloneNotSupportedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			for (Pair<MethodData,CGNode> pair : allMethods) {
+				if(!childClassData.getDeclaringMethods().contains(pair.fst)){
+					addMethodToIndex(pair.fst, pair.snd);
+					childClassData.getInheritedMethods().add(pair.fst);
+				}
+			}
+			populateInheritedMethods(childClassData);
+		}
+	}
+	
+	/**
+	 * Cria um ClassData para classes que só possuam métodos herdados e popula os métodos herdados pelas classes pai, excluindo os que foram sobrescritos.
+	 * Tal procedimento é necessário pois só é possível determinar por completo o conjunto de métodos herdados quando as classes pai já tiverem a relação de todos os seus métodos.
+	 */
+	public void populateInheritedMethods(){
+		IClassHierarchy cha = getCallGraph().getClassHierarchy();
+		for (IClass iClass : cha) {
+			findOrCreateClassData(iClass, null, null); //
+		}
+		for (ClassData classData : indexClassData.values()) {
+			if(classData.getInheritedMethods().isEmpty() && classData.getSuperClass() == null)
+				populateInheritedMethods(classData);
+		}
+	}
+	
+	/**
+	 * Recupera ou cria a classe configurando seus valores, a partir de uma iClass e de uma childClass
+	 * @param iClass
+	 * @param addChildClass
+	 * @param addDeclaringMethod
+	 * @return
+	 */
+	public ClassData findOrCreateClassData(IClass iClass, ClassData addChildClass, MethodData addDeclaringMethod) {
+		String class_name = iClass.getName().getClassName().toString();
+		String class_signature = iClass.getName().getPackage().toString().replaceAll("/", ".") + "." + iClass.getName().getClassName().toString();//iClass.getName().getPackage() + class_name;
+		ClassData classData = getClassDataFromIndex(class_name);
+		if (classData == null) {
+			classData = ScenarioAnalyzerUtil.getFactoryDataElement().createClassData();
+			classData.setName(class_name);
+			classData.setSignature(class_signature);
+			classData.setClassPackage(iClass.getName().getPackage().toString().replaceAll("/", "."));
+			if(iClass.getReference().getName().toString().equals("Ljunit/framework/TestCase"))
+				classData.setTest(true);
+			else if(iClass.getSuperclass() != null){ //TODO: Só é null quando chega em Object, não deveriamos limitar ao escopo do projeto? Dá forma que está parece acessar as classes extendidas que estão contidas nas bibliotecas
+				classData.setSuperClass(findOrCreateClassData(iClass.getSuperclass(),classData,null));
+				classData.setTest(classData.getSuperClass().isTest());
+			}
+			addClassDataToIndex(class_name, classData);
+		}
+		if(addChildClass != null && !classData.getChildrenClasses().contains(addChildClass))
+			classData.getChildrenClasses().add(addChildClass);
+		if(addDeclaringMethod != null && !classData.getDeclaringMethods().contains(addDeclaringMethod))
+			classData.getDeclaringMethods().add(addDeclaringMethod);
+		return classData;
+	}
+	
+	/**
+	 * Recupera ou cria o método configurando seus valores, a partir de um Call Graph Node
+	 * @param node
+	 * @return
+	 */
+	public MethodData findOrCreateMethodDataFromIndex(CGNode node) {
+		IMethod iMethod = node.getMethod();
+		String signature = ScenarioAnalyzerUtil.getStandartMethodSignature(iMethod);
+		MethodData method = getMethodDataFromIndex(signature);
+		if(method == null){
+			method = ScenarioAnalyzerUtil.getFactoryDataElement().createMethodData();
+			method.setName(iMethod.isInit()? iMethod.getDeclaringClass().getName().getClassName().toString() : iMethod.getName().toString());
+			method.setSignature(signature);
+			method.setPartialSignature(ScenarioAnalyzerUtil.getPartialMethodSignature(iMethod));
+			method.setVersion(getVersion());
+			method.setDeclaringClass(findOrCreateClassData(iMethod.getDeclaringClass(), null,method));
+			method.setInit(iMethod.isInit());
+			if(!method.getDeclaringClass().getDeclaringMethods().contains(method))
+				method.getDeclaringClass().getDeclaringMethods().add(method);
+			addMethodToIndex(method, node);
+		}
+		return method;
+	}
 
-	public void addMethodToIndex(String key, MethodData method, CGNode node) {
-		indexMethod.put(key, Pair.make(method, node));
+	public void addMethodToIndex(MethodData method, CGNode node) {
+		indexMethod.put(method.getSignature(), Pair.make(method, node));
 	}
 	
 	public MethodData getMethodDataFromIndex(String key) {
-		if (indexMethod.get(key) == null)
-			return null;
-		
-		return indexMethod.get(key).fst;
+		if (indexMethod.containsKey(key))
+			return indexMethod.get(key).fst;
+		return null;
 	}
 	
 	public CGNode getMethodNodeFromIndex(String key) {
-		return indexMethod.get(key).snd;
+		if (indexMethod.containsKey(key))
+			return indexMethod.get(key).snd;
+		return null;
 	}
 	
 	public MethodData[] getMethodDataAsArray() {

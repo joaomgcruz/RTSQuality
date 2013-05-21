@@ -34,11 +34,18 @@ public class MethodDataImpl implements MethodData {
 	
 	private String name;
 	private String signature;
+	private String partialSignature;
 	private ClassData declaringClass;
 	private List<AbstractQAData> qualityAttributes;
+	private List<MethodData> methodInvocations;
+	private List<MethodData> methodParents;
+	private boolean init;
 
 	public MethodDataImpl() {
 		qualityAttributes = new ArrayList<AbstractQAData>();
+		methodInvocations = new ArrayList<MethodData>();
+		methodParents = new ArrayList<MethodData>();
+		init = false;
 	}
 	
 	public String getVersion() {
@@ -73,6 +80,14 @@ public class MethodDataImpl implements MethodData {
 		this.declaringClass = declaringClass;
 	}
 
+	public boolean isInit() {
+		return init;
+	}
+
+	public void setInit(boolean init) {
+		this.init = init;
+	}
+
 	public ScenarioData getScenario() {
 		return scenario;
 	}
@@ -82,35 +97,33 @@ public class MethodDataImpl implements MethodData {
 	}
 
 	public List<MethodData> getMethodInvocations() {
-		List<MethodData> result = new ArrayList<MethodData>();
 		JDTWALADataStructure data = ScenarioAnalyzerUtil.getDataStructureInstance(version);
 		CGNode node = data.getMethodNodeFromIndex(signature);
-		
-		for (Iterator<CallSiteReference> it = node.iterateCallSites(); it.hasNext();) {
-			for (CGNode child : data.getCallGraph().getPossibleTargets(node, it.next())) {
-				if (child.getMethod().getDeclaringClass().getClassLoader().getReference().equals(JavaSourceAnalysisScope.SOURCE))
-					result.add(data.getMethodDataFromIndex(
-						ScenarioAnalyzerUtil.getStandartMethodSignature(child.getMethod())));
+		if(methodInvocations.isEmpty()){
+			//Adiciona os métodos chamados por este método 
+			Iterator<CGNode> successors = data.getCallGraph().getSuccNodes(node);
+			while (successors.hasNext()) {
+				CGNode invocation = successors.next();
+				if (invocation.getMethod().getDeclaringClass().getClassLoader().getReference().equals(JavaSourceAnalysisScope.SOURCE))
+					methodInvocations.add(data.findOrCreateMethodDataFromIndex(invocation));
 			}
 		}
-		
-		return result;
+		return methodInvocations;
 	}
 
 	public List<MethodData> getMethodParents() {
-		List<MethodData> result = new ArrayList<MethodData>();
 		JDTWALADataStructure data = ScenarioAnalyzerUtil.getDataStructureInstance(version);
 		CGNode node = data.getMethodNodeFromIndex(signature);
-		
-		for (Iterator<CGNode> itr = data.getCallGraph().getPredNodes(node); itr.hasNext();) {
-			CGNode parent = itr.next();
-			
-			if (parent.getMethod().getDeclaringClass().getClassLoader().getReference().equals(JavaSourceAnalysisScope.SOURCE))
-				result.add(data.getMethodDataFromIndex(
-					ScenarioAnalyzerUtil.getStandartMethodSignature(parent.getMethod())));
+		if(methodParents.isEmpty()){
+			//Adiciona os chamadores deste método 
+			Iterator<CGNode> predecessors = data.getCallGraph().getPredNodes(node);
+			while (predecessors.hasNext()) {
+				CGNode parent = predecessors.next();//TODO: Porque o método setTermoUm de OperacaoAdicao não tem predecessores que não sejam rootFake?
+				if (parent.getMethod().getDeclaringClass().getClassLoader().getReference().equals(JavaSourceAnalysisScope.SOURCE))
+					methodParents.add(data.findOrCreateMethodDataFromIndex(parent));
+			}
 		}
-		
-		return result;
+		return methodParents;
 	}
 
 	public List<AbstractQAData> getQualityAttributes() {
@@ -126,4 +139,21 @@ public class MethodDataImpl implements MethodData {
 		return this.getSignature().equals(((MethodData) m).getSignature());
 	}
 
+	public MethodData clone() throws CloneNotSupportedException {
+        return (MethodDataImpl) super.clone();
+    }
+
+	public String getPartialSignature() {
+		return partialSignature;
+	}
+
+	public void setPartialSignature(String partialSignature) {
+		this.partialSignature = partialSignature;
+	}
+
+	@Override
+	public String toString() {
+		return "MethodDataImpl [" + signature + "]";
+	}
+	
 }

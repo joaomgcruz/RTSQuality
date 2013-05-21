@@ -2,6 +2,8 @@ package br.ufrn.ppgsc.scenario.analyzer.processors.impl;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -12,6 +14,9 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 
+import br.ufrn.ppgsc.regressiontest.analyzer.RegressionTestSearch;
+import br.ufrn.ppgsc.scenario.analyzer.Activator;
+import br.ufrn.ppgsc.scenario.analyzer.data.AbstractData;
 import br.ufrn.ppgsc.scenario.analyzer.data.AbstractQAData;
 import br.ufrn.ppgsc.scenario.analyzer.data.MethodData;
 import br.ufrn.ppgsc.scenario.analyzer.data.ScenarioData;
@@ -56,6 +61,10 @@ public class JavaProjectProcessor implements IProjectProcessor {
 		ScenarioAnalyzerUtil.getAnnotationProcessor().process(data);
 		System.out.println("--- Annotation processed");
 		
+		Set<AbstractData> changes = new HashSet<AbstractData>();
+		changes.add(data.getMethodDataFromIndex("br.pucrio.inf.les.genarch.exemplos.ms.framework.OperacaoAdicao.setTermoUm(java.lang.Float)"));
+		RegressionTestSearch.definingRegressionTestSuite(changes, project);
+		
 		data.printInfo();
 		System.out.println("--- Info printed");
 		
@@ -65,8 +74,8 @@ public class JavaProjectProcessor implements IProjectProcessor {
 //		ScenarioAnalyzerUtil.printMethod("br.com.ecommerce.arq.sbeans.RegistroSBean.cadastrar(br.com.ecommerce.arq.dominio.CadastroDB)");
 //		System.out.println("--- Method root printed");
 		
-		ScenarioAnalyzerUtil.printDataStructure(data,
-				new PrintStream("C:/Eclipse/EclipseJunoWALA/workspace/br.ufrn.ppgsc.scenario.analyzer/out.txt"));
+		String location = Activator.getDefault().getBundle().getLocation();
+		ScenarioAnalyzerUtil.printDataStructure(data, new PrintStream(location.substring(location.indexOf('/')+1)+"out.txt"));
 		ScenarioAnalyzerUtil.printDataStructure(data, System.out);
 		System.out.println("--- Data structure printed");
 		

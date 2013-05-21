@@ -24,7 +24,7 @@ public class ScenarioApplicationEntrypoints extends HashSet<Entrypoint> {
 			if (!klass.isInterface() && isSourceClassLoader(klass))
 				for (IMethod method : klass.getDeclaredMethods())
 					if (!method.isAbstract())
-						if (hasAnnotation(method, Scenario.class))
+//						if (hasAnnotation(method, Scenario.class)) //TODO: Descomentar e adicionar lógica que inclua como entrypoints também os métodos pertencentes as classes de teste
 							add(new ArgumentTypeEntrypoint(method, cha));
 	}
 

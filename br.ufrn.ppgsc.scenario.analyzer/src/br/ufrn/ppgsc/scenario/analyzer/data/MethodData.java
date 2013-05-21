@@ -27,5 +27,15 @@ public interface MethodData extends AbstractData {
 	public List<AbstractQAData> getQualityAttributes();
 
 	public void setQualityAttributes(List<AbstractQAData> qualityAttributes);
+	
+	public String getPartialSignature();
+	
+	public void setPartialSignature(String partialSignature);
+	
+	public boolean isInit();
+	
+	public void setInit(boolean init);
+	
+	public MethodData clone() throws CloneNotSupportedException;
 
 }

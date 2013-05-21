@@ -1,6 +1,6 @@
 package br.ufrn.ppgsc.scenario.analyzer.data;
 
-public interface AbstractData {
+public interface AbstractData extends Cloneable {
 	
 	public String getName();
 

@@ -93,14 +93,20 @@ public class AnnotationProcessor implements IAnnotationProcessor {
 		scenario.setName(uc_name);
 
 		// descobrir o método onde está a anotação de caso de uso e a classe que ele pertence
-		IMethodBinding m_binding = ((MethodDeclaration) node.getParent()).resolveBinding();
+		IMethodBinding m_binding = ((MethodDeclaration) node.getParent()).resolveBinding(); //TODO: A anotação não pode estar em uma classe ao invés de estar em um método?
 		
 		// verifica se o método já foi analisado
-		MethodData method = data.getMethodDataFromIndex(ScenarioAnalyzerUtil.getStandartMethodSignature(m_binding));
+		String signature = ScenarioAnalyzerUtil.getStandartMethodSignature(m_binding);
+		MethodData method = data.getMethodDataFromIndex(signature);
 		
-		// associar o cenário com o método inicial e vice-versa
-		scenario.setStartMethod(method);
-		method.setScenario(scenario);
+		try{
+			// associar o cenário com o método inicial e vice-versa
+			scenario.setStartMethod(method);
+			method.setScenario(scenario);
+		}catch(NullPointerException e){
+			System.out.println("Method " + signature + " not found.");
+			e.printStackTrace();
+		}
 		
 		// adiciona o caso de uso para o modelo do sistema
 		data.addScenario(scenario);
