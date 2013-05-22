@@ -1,18 +1,18 @@
 package br.ufrn.ppgsc.scenario.analyzer.d.data;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.List;
 
 public class RuntimeNode {
-	
-	private Method method;
+
+	private Member member; // Constructor, Field, Method
 	private long time;
 	private Throwable exception;
 	private List<RuntimeNode> children;
 
-	public RuntimeNode(Method method) {
-		this.method = method;
+	public RuntimeNode(Member member) {
+		this.member = member;
 		this.children = new ArrayList<RuntimeNode>();
 		this.time = 0;
 		this.exception = null;
@@ -30,8 +30,8 @@ public class RuntimeNode {
 		return children.toArray(new RuntimeNode[0]);
 	}
 
-	public Method getMethod() {
-		return method;
+	public Member getMember() {
+		return member;
 	}
 
 	public long getTime() {

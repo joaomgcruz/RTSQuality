@@ -2,6 +2,7 @@ package br.ufrn.ppgsc.scenario.analyzer.d.data;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 
 import br.ufrn.ppgsc.scenario.analyzer.annotations.Performance;
 import br.ufrn.ppgsc.scenario.analyzer.annotations.Reliability;
@@ -18,7 +19,7 @@ public abstract class DataUtil {
 	}
 	
 	private static void printInOrder(RuntimeNode root, Appendable buffer) throws IOException {
-		buffer.append(root.getMethod().getName());
+		buffer.append(root.getMember().getName());
 		
 		for (RuntimeNode node : root.getChildren()) {
 			buffer.append(" > ");
@@ -27,24 +28,26 @@ public abstract class DataUtil {
 	}
 	
 	private static void printTreeNode(RuntimeNode root, String tabs, Appendable buffer) throws IOException {
-		buffer.append(tabs + "(" + root.getTime() + "ms, " +
-				(root.getException() == null ? false : true) + ") " + root.getMethod().getName());
+		buffer.append(tabs + root.getMember().getName() + " (" + root.getTime() + "ms, "
+				+ (root.getException() == null ? false : true) + ")");
 		
-		Annotation annotation = root.getMethod().getAnnotation(Performance.class);
-		if (annotation != null)
-			buffer.append("[Performance: " + ((Performance) annotation).name() + "]");
+		AnnotatedElement element = (AnnotatedElement) root.getMember();
 		
-		annotation = root.getMethod().getAnnotation(Security.class);
+		Annotation annotation = element.getAnnotation(Performance.class);
 		if (annotation != null)
-			buffer.append("[Security: " + ((Security) annotation).name() + "]");
+			buffer.append(" [Performance: " + ((Performance) annotation).name() + "]");
 		
-		annotation = root.getMethod().getAnnotation(Reliability.class);
+		annotation = element.getAnnotation(Security.class);
 		if (annotation != null)
-			buffer.append("[Reliability: " + ((Reliability) annotation).name() + "]");
+			buffer.append(" [Security: " + ((Security) annotation).name() + "]");
 		
-		annotation = root.getMethod().getAnnotation(Robustness.class);
+		annotation = element.getAnnotation(Reliability.class);
 		if (annotation != null)
-			buffer.append("[Robustness: " + ((Robustness) annotation).name() + "]");
+			buffer.append(" [Reliability: " + ((Reliability) annotation).name() + "]");
+		
+		annotation = element.getAnnotation(Robustness.class);
+		if (annotation != null)
+			buffer.append(" [Robustness: " + ((Robustness) annotation).name() + "]");
 		
 		buffer.append(System.lineSeparator());
 		

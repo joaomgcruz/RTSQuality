@@ -1,10 +1,13 @@
 package br.ufrn.ppgsc.scenario.analyzer.d.aspects;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Member;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Stack;
 
+import org.aspectj.lang.Signature;
+import org.aspectj.lang.reflect.ConstructorSignature;
 import org.aspectj.lang.reflect.MethodSignature;
 
 import br.ufrn.ppgsc.scenario.analyzer.annotations.arq.Scenario;
@@ -29,9 +32,6 @@ import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeNode;
  * TODO: adaptar este aspecto para considerar também construtores, pois eles também podem
  * invocar métodos e devem ser considerados na construção do grafo dinâmico.
  * 
- * TODO: ajeitar o cálculo do tempo, pois por algum motivo se o cenário começa no método
- * main, o tempo medido fica zero.
- * 
  * TODO: limitação para quando o cenário já iniciou e o mesmo se divide em threads.
  * Testar isso http://dev.eclipse.org/mhonarc/lists/aspectj-users/msg12554.html
  * 
@@ -41,23 +41,24 @@ public aspect AspectScenario {
 	// Cada thread pode ter uma pilha de execução diferente
 	private final Map<Long, Stack<RuntimeNode>> thread_map = new Hashtable<Long, Stack<RuntimeNode>>();
 	
-	pointcut executionIgnored(): within(br.ufrn.ppgsc.scenario.analyzer..*);
-	pointcut allExecution(): execution(* *.*(..));
+	private pointcut executionIgnored() : within(br.ufrn.ppgsc.scenario.analyzer..*);
 	
-	Object around() : allExecution() && !executionIgnored() {
+	private pointcut scenarioExecution() :
+		cflow(execution(* *(..)) && @annotation(br.ufrn.ppgsc.scenario.analyzer.annotations.arq.Scenario)) &&
+		(execution(* *(..)) || execution(*.new(..)));
+	
+	Object around() : scenarioExecution() && !executionIgnored() {
 		long begin, end;
 		
 		Stack<RuntimeNode> nodes_stack = getOrCreateRuntimeNodeStack();
 		
-		Method method = ((MethodSignature) thisJoinPoint.getSignature()).getMethod();
+		Member member = getMember(thisJoinPoint.getSignature());
 		
-		Scenario ann_scenario = method.getAnnotation(Scenario.class);
+		Scenario ann_scenario = ((AnnotatedElement) member).getAnnotation(Scenario.class);
 		
-		RuntimeNode node = new RuntimeNode(method);
+		RuntimeNode node = new RuntimeNode(member);
 		
-		/*
-		 * Se achou a anotação de cenário, começa a criar as estruturas para ele
-		 */
+		// Se achou a anotação de cenário, começa a criar as estruturas para ela
 		if (ann_scenario != null) {
 			RuntimeCallGraph cg = new RuntimeCallGraph(ann_scenario.name(), node);
 			ExecutionPaths.getInstance().addRuntimeCallGraph(cg);
@@ -76,8 +77,9 @@ public aspect AspectScenario {
 		 * Se já existe alguma coisa na pilha, então o método atual
 		 * foi invocado pelo último método que está na pilha
 		 */
-		if (!nodes_stack.empty())
+		if (!nodes_stack.empty()) {
 			nodes_stack.peek().addChild(node);
+		}
 		
 		nodes_stack.push(node);
 		
@@ -90,12 +92,40 @@ public aspect AspectScenario {
 		return o;
 	}
 	
-	after() throwing(Throwable t) : allExecution() && !executionIgnored()  {
-		setRobustness(t, (MethodSignature) thisJoinPoint.getSignature());
+	after() throwing(Throwable t) : scenarioExecution() && !executionIgnored()  {
+		setRobustness(t, getMember(thisJoinPoint.getSignature()));
+		getOrCreateRuntimeNodeStack().pop().setTime(-1);
 	}
 	
 	before(Throwable t) : handler(Throwable+) && args(t) && !executionIgnored() {
-		setRobustness(t, (MethodSignature) thisEnclosingJoinPointStaticPart.getSignature());
+		setRobustness(t, getMember(thisEnclosingJoinPointStaticPart.getSignature()));
+	}
+	
+	private Member getMember(Signature sig) {
+		if (sig instanceof MethodSignature)
+			return ((MethodSignature) sig).getMethod();
+		else if (sig instanceof ConstructorSignature)
+			return ((ConstructorSignature) sig).getConstructor();
+		
+		return null;
+	}
+	
+	/* TODO: Existem situações que a exceção aborta a execução do programa.
+	 * Nestes casos, o método abaixo deve sempre já gravar a falha,
+	 * enquanto o sistema ainda está em execução, pois quando o aspecto
+	 * devolver a execução o sistema pode cair e perder as estruturas em memória
+	 */
+	private void setRobustness(Throwable t, Member m) {
+		Stack<RuntimeNode> nodes_stack = getOrCreateRuntimeNodeStack();
+		
+		// Se estiver vazia é porque o método não faz parte de cenário
+		if (!nodes_stack.empty()) {
+			RuntimeNode node = nodes_stack.peek();
+		
+			// Testa se foi o método que capturou ou lançou a exceção
+			if (node.getMember().equals(m))
+				node.setException(t);
+		}
 	}
 	
 	private Stack<RuntimeNode> getOrCreateRuntimeNodeStack() {
@@ -108,24 +138,6 @@ public aspect AspectScenario {
 		}
 		
 		return nodes_stack;
-	}
-	
-	/* TODO: Existem situações que a exceção aborta a execução do programa.
-	 * Nestes casos, o método abaixo deve sempre já gravar a falha,
-	 * enquanto o sistema ainda está em execução, pois quando o aspecto
-	 * devolver a execução o sistema pode cair e perder as estruturas em memória
-	 */
-	private void setRobustness(Throwable t, MethodSignature ms) {
-		Stack<RuntimeNode> nodes_stack = getOrCreateRuntimeNodeStack();
-		
-		// Se estiver vazia é porque o método não faz parte de cenário
-		if (!nodes_stack.empty()) {
-			RuntimeNode node = nodes_stack.peek();
-		
-			// Testa se foi o método que capturou ou lançou a exceção
-			if (node.getMethod().equals(ms.getMethod()))
-				node.setException(t);
-		}
 	}
 	
 }
