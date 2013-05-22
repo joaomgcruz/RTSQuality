@@ -38,6 +38,13 @@ public class MainThread {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
+		try {
+			throw new NullPointerException();
+		} catch(Exception e) {
+			
+		}
+		
 	}
 	
 	public static void main(String[] args) throws IOException {

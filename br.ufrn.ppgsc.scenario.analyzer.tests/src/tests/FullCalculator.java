@@ -14,12 +14,15 @@ public class FullCalculator implements IFullCalculator {
 	public FullCalculator() {
 		add_sub = new AddSubCalculator();
 		mult_div = new MultDivCalculator();
+		throw new NullPointerException();
 	}
 
 	@Scenario(name="SC-FullCalculator-add")
 	@Performance(name = "PM-FullCalculator-add", limit = 1)
 	public float add(float a, float b) {
 		add_sub.sub(a, b);
+		
+		System.out.println("teste");
 		
 		if (add_sub.add(a, b) > 5)
 			return add(a - 1, b);
