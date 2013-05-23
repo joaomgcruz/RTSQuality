@@ -15,7 +15,6 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 
 import br.ufrn.ppgsc.regressiontest.analyzer.RegressionTestSearch;
-import br.ufrn.ppgsc.scenario.analyzer.Activator;
 import br.ufrn.ppgsc.scenario.analyzer.data.AbstractData;
 import br.ufrn.ppgsc.scenario.analyzer.data.AbstractQAData;
 import br.ufrn.ppgsc.scenario.analyzer.data.MethodData;
@@ -74,8 +73,7 @@ public class JavaProjectProcessor implements IProjectProcessor {
 //		ScenarioAnalyzerUtil.printMethod("br.com.ecommerce.arq.sbeans.RegistroSBean.cadastrar(br.com.ecommerce.arq.dominio.CadastroDB)");
 //		System.out.println("--- Method root printed");
 		
-		String location = Activator.getDefault().getBundle().getLocation();
-		ScenarioAnalyzerUtil.printDataStructure(data, new PrintStream(location.substring(location.indexOf('/')+1)+"out.txt"));
+		ScenarioAnalyzerUtil.printDataStructure(data, new PrintStream(javaProject.getResource().getLocation() + "/out.txt"));
 		ScenarioAnalyzerUtil.printDataStructure(data, System.out);
 		System.out.println("--- Data structure printed");
 		

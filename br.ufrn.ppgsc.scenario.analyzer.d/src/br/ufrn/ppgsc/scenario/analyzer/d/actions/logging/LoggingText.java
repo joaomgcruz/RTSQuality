@@ -1,7 +1,10 @@
 package br.ufrn.ppgsc.scenario.analyzer.d.actions.logging;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.util.logging.FileHandler;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import br.ufrn.ppgsc.scenario.analyzer.d.aspects.IActionAnnotation;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimePerformanceData;
@@ -12,9 +15,28 @@ import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeSecurityData;
 
 public class LoggingText implements IActionAnnotation {
 
+	private static Logger logger;
+	
+	public LoggingText() {
+		if (logger == null) {
+			FileHandler fh = null;
+			try {
+				fh = new FileHandler("log.txt");
+			} catch (SecurityException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	
+			fh.setFormatter(new SimpleFormatter());
+			
+			logger = Logger.getLogger(LoggingText.class.getName());
+			logger.setUseParentHandlers(false);
+			logger.addHandler(fh);
+		}
+	}
+	
 	public void execute(RuntimeQAData<? extends Annotation> metadata) {
-		Logger logger = LoggerWrapper.getInstance(LoggingText.class.getName());
-		
 		if (metadata instanceof RuntimePerformanceData) {
 			RuntimePerformanceData data = (RuntimePerformanceData) metadata;
 	

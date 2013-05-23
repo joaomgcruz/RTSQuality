@@ -14,7 +14,7 @@ public class FullCalculator implements IFullCalculator {
 	public FullCalculator() {
 		add_sub = new AddSubCalculator();
 		mult_div = new MultDivCalculator();
-		throw new NullPointerException();
+//		throw new NullPointerException();
 	}
 
 	@Scenario(name="SC-FullCalculator-add")
