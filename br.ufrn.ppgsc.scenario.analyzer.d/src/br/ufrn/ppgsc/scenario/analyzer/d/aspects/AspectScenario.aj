@@ -1,7 +1,7 @@
 package br.ufrn.ppgsc.scenario.analyzer.d.aspects;
 
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Stack;
@@ -14,6 +14,7 @@ import br.ufrn.ppgsc.scenario.analyzer.annotations.arq.Scenario;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.ExecutionPaths;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeCallGraph;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeNode;
+import br.ufrn.ppgsc.scenario.analyzer.service.DatabaseService;
 
 /*
  * Ter uma anotção de scenario é caso base para iniciar a construção da estrutura.
@@ -54,12 +55,13 @@ public aspect AspectScenario {
 		
 		Member member = getMember(thisJoinPoint.getSignature());
 		
-		Scenario ann_scenario = ((AnnotatedElement) member).getAnnotation(Scenario.class);
-		
 		RuntimeNode node = new RuntimeNode(member);
 		
-		// Se achou a anotação de cenário, começa a criar as estruturas para ela
-		if (ann_scenario != null) {
+		/*
+		 * Se achou a anotação de cenário, começa a criar as estruturas para ele
+		 */
+		if (isStartMethod(member)) {
+			Scenario ann_scenario = ((Method)member).getAnnotation(Scenario.class);
 			RuntimeCallGraph cg = new RuntimeCallGraph(ann_scenario.name(), node);
 			ExecutionPaths.getInstance().addRuntimeCallGraph(cg);
 		}
@@ -88,13 +90,23 @@ public aspect AspectScenario {
 		end = System.currentTimeMillis();
 		
 		nodes_stack.pop().setTime(end - begin);
+
+		/*
+		 * Caso o método seja um método de entrada de um cenário, as informações
+		 * da execução serão salvas no banco de dados.
+		 */
+		if (isStartMethod(member)) {
+			RuntimeCallGraph runtimeCallGraph = ExecutionPaths.getInstance().getLastRuntimeCallGraph();
+			RuntimeNode root = runtimeCallGraph.getRoot();
+			DatabaseService.saveResults((Method)member, root.getTime(), (root.getException() == null ? false : true));
+		}
 		
 		return o;
 	}
 	
 	after() throwing(Throwable t) : scenarioExecution() && !executionIgnored()  {
 		setRobustness(t, getMember(thisJoinPoint.getSignature()));
-		getOrCreateRuntimeNodeStack().pop().setTime(-1);
+		//getOrCreateRuntimeNodeStack().pop().setTime(-1);
 	}
 	
 	before(Throwable t) : handler(Throwable+) && args(t) && !executionIgnored() {
@@ -128,6 +140,15 @@ public aspect AspectScenario {
 		}
 	}
 	
+	private boolean isStartMethod(Member member) {
+		boolean result = false;
+		Scenario ann_scenario = ((Method)member).getAnnotation(Scenario.class);
+		if (ann_scenario != null) {
+			result = true;
+		}
+		return result;
+	}
+	
 	private Stack<RuntimeNode> getOrCreateRuntimeNodeStack() {
 		long thread_id = Thread.currentThread().getId();
 		Stack<RuntimeNode> nodes_stack = thread_map.get(thread_id);
@@ -139,5 +160,4 @@ public aspect AspectScenario {
 		
 		return nodes_stack;
 	}
-	
 }
