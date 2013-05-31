@@ -9,4 +9,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Robustness {
 	public String name();
+	public double failure_rate() default 0;
 }

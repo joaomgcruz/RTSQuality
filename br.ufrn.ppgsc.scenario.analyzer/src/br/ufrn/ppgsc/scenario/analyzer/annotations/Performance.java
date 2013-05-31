@@ -9,5 +9,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Performance {
 	public String name();
-	public long limit() default 0;
+	public long limit_time() default 0;
 }
