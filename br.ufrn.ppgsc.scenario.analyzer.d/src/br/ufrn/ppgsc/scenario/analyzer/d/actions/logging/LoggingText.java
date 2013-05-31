@@ -40,11 +40,11 @@ public class LoggingText implements IActionAnnotation {
 		if (metadata instanceof RuntimePerformanceData) {
 			RuntimePerformanceData data = (RuntimePerformanceData) metadata;
 	
-			String log = "@Performance(" + data.getAnnotation().name() + ", " + data.getAnnotation().limit() +
+			String log = "@Performance(" + data.getAnnotation().name() + ", " + data.getAnnotation().limit_time() +
 					")\n\tin: " + metadata.getMethod().getDeclaringClass().getName() + "." +
 					data.getMethod().getName()	+ "\n\tTime: " + data.getLastTime() + "ms\n";
 			
-			if (data.getLastTime() > data.getAnnotation().limit())
+			if (data.getLastTime() > data.getAnnotation().limit_time())
 				logger.warning(log);
 			else
 				logger.info(log);

@@ -4,14 +4,14 @@ import br.ufrn.ppgsc.scenario.analyzer.annotations.Performance;
 
 public class RuntimePerformanceData extends RuntimeQAData<Performance> {
 	
-	private long lastTime;
+	private long time;
 	
 	public long getLastTime() {
-		return lastTime;
+		return time;
 	}
 	
-	public void setLastTime(long lastTime) {
-		this.lastTime = lastTime;
+	public void setLastTime(long time) {
+		this.time = time;
 	}	
 
 }
