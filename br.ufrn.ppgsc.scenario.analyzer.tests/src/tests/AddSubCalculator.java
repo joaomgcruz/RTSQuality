@@ -19,11 +19,11 @@ public class AddSubCalculator implements IAddSubCalculator {
 	@Scenario(name="subsub in test")
 	@Security(name="sec in test")
 	public void test(java.util.List<java.lang.Integer> param) {
-			
+		System.out.println(param);
 	}
 	
 	public void test2(List<Integer> param) {
-		
+		System.out.println(param);
 	}
 
 	public float sub(float a, float b) {
