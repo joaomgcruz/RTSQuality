@@ -142,10 +142,12 @@ public aspect AspectScenario {
 	
 	private boolean isStartMethod(Member member) {
 		boolean result = false;
-		Scenario ann_scenario = ((Method)member).getAnnotation(Scenario.class);
-		if (ann_scenario != null) {
-			result = true;
+		
+		if (member instanceof Method) {
+			Scenario ann_scenario = ((Method) member).getAnnotation(Scenario.class);
+			result = ann_scenario != null;
 		}
+		
 		return result;
 	}
 	
