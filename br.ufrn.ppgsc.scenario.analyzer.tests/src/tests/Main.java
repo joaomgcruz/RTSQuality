@@ -32,10 +32,10 @@ public class Main {
 	}
 
 	@Scenario(name="main")
-	public static void main(String[] args) throws IOException {
+	public static void main(String args[]) throws IOException {
 		Main m = new Main();
 		
-		System.out.println(m.convertToInt("s10"));
+		System.out.println(m.convertToInt("ss10"));
 		
 		try {
 			System.out.println(m.divide(1, 0));
