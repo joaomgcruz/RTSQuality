@@ -3,8 +3,6 @@ package tests;
 import org.junit.Test;
 
 import br.ufrn.ppgsc.scenario.analyzer.annotations.Performance;
-import br.ufrn.ppgsc.scenario.analyzer.annotations.Reliability;
-import br.ufrn.ppgsc.scenario.analyzer.annotations.Robustness;
 import br.ufrn.ppgsc.scenario.analyzer.annotations.Security;
 import br.ufrn.ppgsc.scenario.analyzer.annotations.arq.Scenario;
 
@@ -12,7 +10,7 @@ public class SimpleMain {
 
 	@Test
 	@Scenario(name = "main scenario")
-	@Performance(name = "main scenario performance", limit = 1000)
+	@Performance(name = "main scenario performance", limit_time = 1000)
 	@Security(name = "main scenario security")
 	public void testeQualquer() {
 		System.out.println("CORPO DO MÉTODO PRINCIPAL");

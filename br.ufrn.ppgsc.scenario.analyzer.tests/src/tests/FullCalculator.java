@@ -18,7 +18,7 @@ public class FullCalculator implements IFullCalculator {
 	}
 
 	@Scenario(name="SC-FullCalculator-add")
-	@Performance(name = "PM-FullCalculator-add", limit = 1)
+	@Performance(name = "PM-FullCalculator-add", limit_time = 1)
 	public float add(float a, float b) {
 		add_sub.sub(a, b);
 		
@@ -31,7 +31,7 @@ public class FullCalculator implements IFullCalculator {
 	}
 
 	@Scenario(name="SC-FullCalculator-sub")
-	@Performance(name = "PM-FullCalculator-sub", limit = 1)
+	@Performance(name = "PM-FullCalculator-sub", limit_time = 1)
 	public float sub(float a, float b) {
 		return add_sub.sub(a, b);
 	}
