@@ -238,6 +238,10 @@ public class JDTWALADataStructure {
 		System.out.println("indexAnnotation.size() = " + indexAnnotation.size());
 		System.out.println("indexClassData.size() = " + indexClassData.size());
 		System.out.println("listScenario.size() = " + listScenario.size());
+		
+		for (String sig: indexMethod.keySet()) {
+			System.out.println("# " + sig);
+		}
 	}
 	
 	/* TODO

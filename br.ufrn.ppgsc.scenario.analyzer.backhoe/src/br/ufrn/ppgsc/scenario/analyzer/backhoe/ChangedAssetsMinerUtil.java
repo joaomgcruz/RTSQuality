@@ -67,11 +67,15 @@ public class ChangedAssetsMinerUtil {
 		sourceVisitor.visit(sourceCu, null);
 		targetVisitor.visit(targetCu, null);
 		
+		sourceClass.setName(sourceCu.getPackage().getName().getName() + "." + sourceCu.getTypes().get(0).getName());
+		if (targetCu.getPackage() != null)
+			targetClass.setName(targetCu.getPackage().getName().getName() + "." + targetCu.getTypes().get(0).getName());
+		
 		/* 
 		 * TODO: arrumar para pegar também o construtor
 		 * atualmente não preciso pegar os campos
 		 */
-		retrieveChangedFields(targetClass,sourceVisitor,targetVisitor);
+		retrieveChangedFields(targetClass, sourceVisitor, targetVisitor);
 		retrieveChangedMethods(targetClass, sourceVisitor, targetVisitor);
 		
 	}
@@ -154,7 +158,7 @@ public class ChangedAssetsMinerUtil {
 					{
 						if(sourceMethod.getBody().equals(targetMethod.getBody()))
 						{
-							BackhoeMethodCL mcl = buildMethod(sourceMethod, ChangeType.UPDATED);
+							BackhoeMethodCL mcl = buildMethod(clazz, sourceMethod, ChangeType.UPDATED);
 							clazz.getMethods().add(mcl);
 							sameBody = true;
 						}
@@ -162,7 +166,7 @@ public class ChangedAssetsMinerUtil {
 				}
 				if(!sameBody)
 				{
-					BackhoeMethodCL mcl = buildMethod(sourceMethod, ChangeType.ADDED);
+					BackhoeMethodCL mcl = buildMethod(clazz, sourceMethod, ChangeType.ADDED);
 					clazz.getMethods().add(mcl);
 				}
 			}
@@ -177,7 +181,7 @@ public class ChangedAssetsMinerUtil {
 
 					if(!sourceMethod.getBody().equals(targetMethod.getBody()))
 					{
-						BackhoeMethodCL mcl = buildMethod(sourceMethod, ChangeType.UPDATED);
+						BackhoeMethodCL mcl = buildMethod(clazz, sourceMethod, ChangeType.UPDATED);
 						clazz.getMethods().add(mcl);
 					}
 				}
@@ -205,7 +209,7 @@ public class ChangedAssetsMinerUtil {
 				}
 				if(!sameBody)
 				{
-					BackhoeMethodCL mcl = buildMethod(targetMethod, ChangeType.DELETE);
+					BackhoeMethodCL mcl = buildMethod(clazz, targetMethod, ChangeType.DELETE);
 					clazz.getMethods().add(mcl);
 				}
 			}
@@ -233,19 +237,22 @@ public class ChangedAssetsMinerUtil {
 	/**
 	 * Auxiliary method of "retrieveChangedMethods"
 	 * this method is responsible for building the MethodChangeLog object
+	 * @param clsVisitor 
 	 * @param method
 	 * @param changeType
 	 * @return
 	 */
-	private static BackhoeMethodCL buildMethod(MethodDeclaration method, String changeType)
+	private static BackhoeMethodCL buildMethod(BackhoeClassCL bcl, MethodDeclaration method, String changeType)
 	{
 		BackhoeMethodCL mcl = new BackhoeMethodCL();
+		
 		mcl.setChangeType(changeType);
 		mcl.setName(method.getName());
 		mcl.setSignature(
-				method.getType().toString() + "#"
-				+ method.getName()
-				+ formatParameters(method));
+				bcl.getName() + "." +
+				method.getName() +
+				formatParameters(method));
+		
 		return mcl;
 	}
 	
@@ -268,19 +275,15 @@ public class ChangedAssetsMinerUtil {
 				Parameter p = method.getParameters().get(i);
 
 				sb.append(p.getType().toString());
-				sb.append(" ");
-				sb.append(p.getId().getName());
-			
-				if(i != (method.getParameters().size()-1))
-				{
-					sb.append(", ");
-				}
+				sb.append(",");
 			}
-			sb.append(" )");
+
+			sb.deleteCharAt(sb.length() - 1);
+			sb.append(")");
 		}
 		else
 		{
-			sb.append(" )");
+			sb.append(")");
 		}
 		
 		return sb.toString();
