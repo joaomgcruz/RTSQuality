@@ -16,7 +16,7 @@ import br.ufrn.ppgsc.scenario.analyzer.annotations.Performance;
 import br.ufrn.ppgsc.scenario.analyzer.annotations.Reliability;
 
 /**
- * Implementação do GenericDAO para banco.
+ * Implementaï¿½ï¿½o do GenericDAO para banco.
  * @author Rodrigo Dutra de Oliveira
  *
  */
@@ -29,12 +29,12 @@ public class GenericDAOImpl implements GenericDAO{
 	protected static final int REMOVER = 3;
 
 	/**
-	 * Transação com o banco.
+	 * Transaï¿½ï¿½o com o banco.
 	 */
 	private Transaction tx;
 
 	/**
-	 * Sessão de comunicação com o banco.
+	 * Sessï¿½o de comunicaï¿½ï¿½o com o banco.
 	 */
 	protected Session session;
 
@@ -48,7 +48,7 @@ public class GenericDAOImpl implements GenericDAO{
 	}
 
 	/**
-	 * Desassocia o objeto com a sessão.
+	 * Desassocia o objeto com a sessï¿½o.
 	 */
 	public void detach(PersistDB p) throws DAOException{
 
@@ -60,7 +60,7 @@ public class GenericDAOImpl implements GenericDAO{
 	}
 
 	/**
-	 * Retorna a intância do session factory
+	 * Retorna a intï¿½ncia do session factory
 	 * @return SessionFactory
 	 */
 	public SessionFactory getSF() {
@@ -68,12 +68,12 @@ public class GenericDAOImpl implements GenericDAO{
 	}
 
 	/**
-	 * Busca um PersistDB pela sua chave primária.
-	 * @param <T> é o tipo do PersistDB.
-	 * @param primaryKey é a chamve primária.
-	 * @param classe é a classe do PersistDB.
+	 * Busca um PersistDB pela sua chave primï¿½ria.
+	 * @param <T> ï¿½ o tipo do PersistDB.
+	 * @param primaryKey ï¿½ a chamve primï¿½ria.
+	 * @param classe ï¿½ a classe do PersistDB.
 	 * 
-	 * @return o PersistDB com a chave primária informada.
+	 * @return o PersistDB com a chave primï¿½ria informada.
 	 * @throws DAOException
 	 */
 	@SuppressWarnings("unchecked")
@@ -91,11 +91,11 @@ public class GenericDAOImpl implements GenericDAO{
 	}
 
 	/**
-	 * Busca todos os PersistDBs associados à classe passada.
-	 * @param <T> é o tipo do PersistDB
-	 * @param classe é a classe que representa o tipo do PersistDB
+	 * Busca todos os PersistDBs associados ï¿½ classe passada.
+	 * @param <T> ï¿½ o tipo do PersistDB
+	 * @param classe ï¿½ a classe que representa o tipo do PersistDB
 	 * 
-	 * @return Coleção com os PersistDBs encontrados
+	 * @return Coleï¿½ï¿½o com os PersistDBs encontrados
 	 * @throws DAOException
 	 */
 	@SuppressWarnings("unchecked")
@@ -105,11 +105,11 @@ public class GenericDAOImpl implements GenericDAO{
 	}
 	
 	/**
-	 * Busca todos os PersistDBs associados à classe passada.
-	 * @param <T> é o tipo do PersistDB
-	 * @param classe é a classe que representa o tipo do PersistDB
+	 * Busca todos os PersistDBs associados ï¿½ classe passada.
+	 * @param <T> ï¿½ o tipo do PersistDB
+	 * @param classe ï¿½ a classe que representa o tipo do PersistDB
 	 * 
-	 * @return Coleção com os PersistDBs encontrados
+	 * @return Coleï¿½ï¿½o com os PersistDBs encontrados
 	 * @throws DAOException
 	 */
 	@SuppressWarnings("unchecked")
@@ -119,11 +119,11 @@ public class GenericDAOImpl implements GenericDAO{
 	}
 	
 	/**
-	 * Busca todos os CadastroDBs ativos associados à classe passada.
-	 * @param <T> é o tipo do PersistDB
-	 * @param classe é a classe que representa o tipo do PersistDB
+	 * Busca todos os CadastroDBs ativos associados ï¿½ classe passada.
+	 * @param <T> ï¿½ o tipo do PersistDB
+	 * @param classe ï¿½ a classe que representa o tipo do PersistDB
 	 * 
-	 * @return Coleção com os CadastroDBs encontrados
+	 * @return Coleï¿½ï¿½o com os CadastroDBs encontrados
 	 * @throws DAOException
 	 */
 	@SuppressWarnings("unchecked")
@@ -133,9 +133,9 @@ public class GenericDAOImpl implements GenericDAO{
 	}
 
 	/**
-	 * Abre uma sessão com o banco.
+	 * Abre uma sessï¿½o com o banco.
 	 * 
-	 * @return Sessão com o banco recem aberta.
+	 * @return Sessï¿½o com o banco recem aberta.
 	 * @throws DAOException
 	 */
 	public synchronized Session getSession() throws DAOException {
@@ -153,7 +153,7 @@ public class GenericDAOImpl implements GenericDAO{
 	}
 
 	/**
-	 * Método para se efetuar uma operação com o banco.
+	 * Mï¿½todo para se efetuar uma operaï¿½ï¿½o com o banco.
 	 * @param obj
 	 * @param operacao
 	 * @throws DAOException
@@ -182,21 +182,21 @@ public class GenericDAOImpl implements GenericDAO{
 	}
 
 	/**
-	 * Método para efetuar a inserção de um objeto mapedo no banco
+	 * Mï¿½todo para efetuar a inserï¿½ï¿½o de um objeto mapedo no banco
 	 * @param obj
 	 * @throws DAOException
 	 */
 //	@UseCase(name="usecase_registration_user", step="3.2",
 //			performance=@Performance(name="performance_registration_dao", max_value=2000),
 //			security=@Security("security_registration_dao"))
-	@Performance(name="Performance: save", limit=2000)
+	@Performance(name="Performance: save", limit_time=2000)
 	@Reliability(name="Reliability: save")
 	public void save(PersistDB obj) throws DAOException{
 		changeOperation(obj, INSERIR);
 	}
 	
 	/**
-	 * Método para efetuar a inserção de um log de anotação
+	 * Mï¿½todo para efetuar a inserï¿½ï¿½o de um log de anotaï¿½ï¿½o
 	 * @param obj
 	 * @throws DAOException
 	 */
@@ -205,7 +205,7 @@ public class GenericDAOImpl implements GenericDAO{
 	}
 
 	/**
-	 * Método para efetuar a atualizão de um objeto mapedo no banco.
+	 * Mï¿½todo para efetuar a atualizï¿½o de um objeto mapedo no banco.
 	 * @param obj
 	 * @throws DAOException
 	 */
@@ -214,7 +214,7 @@ public class GenericDAOImpl implements GenericDAO{
 	}
 
 	/**
-	 * Método para efetuar a remoro de um objeto mapedo no banco
+	 * Mï¿½todo para efetuar a remoro de um objeto mapedo no banco
 	 * @param obj
 	 * @throws DAOException
 	 */
@@ -223,7 +223,7 @@ public class GenericDAOImpl implements GenericDAO{
 	}
 
 	/**
-	 * Método para se fechar a session com o banco se esta esta aberta.
+	 * Mï¿½todo para se fechar a session com o banco se esta esta aberta.
 	 * @throws HibernateException
 	 * @throws DAOException
 	 */
@@ -233,7 +233,7 @@ public class GenericDAOImpl implements GenericDAO{
 	}
 	
 	/**
-	 * Busca genérica com Query.
+	 * Busca genï¿½rica com Query.
 	 *
 	 * @param classe
 	 * @param field

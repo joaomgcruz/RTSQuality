@@ -1,12 +1,5 @@
 package br.com.ecommerce.jsf;
 
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.List;
 
@@ -20,10 +13,6 @@ import br.com.ecommerce.arq.jsf.Paginacao;
 import br.com.ecommerce.dao.ProdutoDAO;
 import br.com.ecommerce.dominio.NavegacaoDTO;
 import br.com.ecommerce.dominio.produto.Produto;
-import br.ufrn.ppgsc.scenario.analyzer.d.aspects.ScenarioIgnore;
-import br.ufrn.ppgsc.scenario.analyzer.d.data.DataUtil;
-import br.ufrn.ppgsc.scenario.analyzer.d.data.ExecutionPaths;
-import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeCallGraph;
 
 /**
  * Controla navega��o.

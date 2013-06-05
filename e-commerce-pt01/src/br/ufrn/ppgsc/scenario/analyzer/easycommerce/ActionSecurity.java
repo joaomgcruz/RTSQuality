@@ -1,4 +1,4 @@
-package br.com.ecommerce.action.annotation;
+package br.ufrn.ppgsc.scenario.analyzer.easycommerce;
 
 import java.lang.annotation.Annotation;
 import java.util.Date;
@@ -8,13 +8,11 @@ import javax.faces.context.FacesContext;
 import br.com.ecommerce.arq.erros.DAOException;
 import br.com.ecommerce.arq.sbeans.SBeanCadastro;
 import br.ufrn.ppgsc.scenario.analyzer.d.aspects.IActionAnnotation;
-import br.ufrn.ppgsc.scenario.analyzer.d.aspects.ScenarioIgnore;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeQAData;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeSecurityData;
 
 public class ActionSecurity implements IActionAnnotation {
 
-	@ScenarioIgnore
 	public void execute(RuntimeQAData<? extends Annotation> metadata) {
 		SecurityAnnotation ann_db = new SecurityAnnotation();
 		RuntimeSecurityData meta_secur = (RuntimeSecurityData) metadata;

@@ -62,9 +62,9 @@
 	
 <mapping class="br.com.ecommerce.dominio.Estoque"/>
 
-	<mapping class="br.com.ecommerce.action.annotation.PerformanceAnnotation"/>
-	<mapping class="br.com.ecommerce.action.annotation.SecurityAnnotation"/>
-	<mapping class="br.com.ecommerce.action.annotation.ReliabilityAnnotation"/>
+	<mapping class="br.ufrn.ppgsc.scenario.analyzer.easycommerce.PerformanceAnnotation"/>
+	<mapping class="br.ufrn.ppgsc.scenario.analyzer.easycommerce.SecurityAnnotation"/>
+	<mapping class="br.ufrn.ppgsc.scenario.analyzer.easycommerce.ReliabilityAnnotation"/>
 	
 	</session-factory> 
 </hibernate-configuration>
