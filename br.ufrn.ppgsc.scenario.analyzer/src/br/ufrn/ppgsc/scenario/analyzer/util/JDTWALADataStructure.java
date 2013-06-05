@@ -118,13 +118,13 @@ public class JDTWALADataStructure {
 	 */
 	public ClassData findOrCreateClassData(IClass iClass, ClassData addChildClass, MethodData addDeclaringMethod) {
 		String class_name = iClass.getName().getClassName().toString();
-		String class_signature = iClass.getName().getPackage().toString().replaceAll("/", ".") + "." + iClass.getName().getClassName().toString();//iClass.getName().getPackage() + class_name;
+//		String class_signature = iClass.getName().getPackage().toString().replaceAll("/", ".") + "." + iClass.getName().getClassName().toString();//iClass.getName().getPackage() + class_name;
 		ClassData classData = getClassDataFromIndex(class_name);
 		if (classData == null) {
 			classData = ScenarioAnalyzerUtil.getFactoryDataElement().createClassData();
 			classData.setName(class_name);
-			classData.setSignature(class_signature);
-			classData.setClassPackage(iClass.getName().getPackage().toString().replaceAll("/", "."));
+//			classData.setSignature(class_signature);
+//			classData.setClassPackage(iClass.getName().getPackage().toString().replaceAll("/", "."));
 			if(iClass.getReference().getName().toString().equals("Ljunit/framework/TestCase"))
 				classData.setTest(true);
 			else if(iClass.getSuperclass() != null){ //TODO: Só é null quando chega em Object, não deveriamos limitar ao escopo do projeto? Dá forma que está parece acessar as classes extendidas que estão contidas nas bibliotecas
