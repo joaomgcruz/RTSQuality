@@ -8,7 +8,7 @@ import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeRobustnessData;
 
 public aspect AspectRobustness {
 	
-	private pointcut executionIgnored() : within(br.ufrn.ppgsc.scenario.analyzer..*);
+	private pointcut executionIgnored() : within(br.ufrn.ppgsc.scenario.analyzer..*) || adviceexecution();
 	
 	// dessa forma pega com try-catch
 	before(Throwable t): handler(Throwable+) && args(t) && !executionIgnored() {

@@ -14,7 +14,6 @@ import br.ufrn.ppgsc.scenario.analyzer.annotations.arq.Scenario;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.ExecutionPaths;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeCallGraph;
 import br.ufrn.ppgsc.scenario.analyzer.d.data.RuntimeNode;
-import br.ufrn.ppgsc.scenario.analyzer.service.DatabaseService;
 
 /*
  * Ter uma anotção de scenario é caso base para iniciar a construção da estrutura.
@@ -42,7 +41,7 @@ public aspect AspectScenario {
 	// Cada thread pode ter uma pilha de execução diferente
 	private final Map<Long, Stack<RuntimeNode>> thread_map = new Hashtable<Long, Stack<RuntimeNode>>();
 	
-	private pointcut executionIgnored() : within(br.ufrn.ppgsc.scenario.analyzer..*);
+	private pointcut executionIgnored() : within(br.ufrn.ppgsc.scenario.analyzer..*) || adviceexecution();
 	
 	private pointcut scenarioExecution() :
 		cflow(execution(* *(..)) && @annotation(br.ufrn.ppgsc.scenario.analyzer.annotations.arq.Scenario)) &&
@@ -95,11 +94,11 @@ public aspect AspectScenario {
 		 * Caso o método seja um método de entrada de um cenário, as informações
 		 * da execução serão salvas no banco de dados.
 		 */
-		if (isStartMethod(member)) {
-			RuntimeCallGraph runtimeCallGraph = ExecutionPaths.getInstance().getLastRuntimeCallGraph();
-			RuntimeNode root = runtimeCallGraph.getRoot();
-			DatabaseService.saveResults((Method)member, root.getTime(), (root.getException() == null ? false : true));
-		}
+//		if (isStartMethod(member)) {
+//			RuntimeCallGraph runtimeCallGraph = ExecutionPaths.getInstance().getLastRuntimeCallGraph();
+//			RuntimeNode root = runtimeCallGraph.getRoot();
+//			DatabaseService.saveResults((Method)member, root.getTime(), (root.getException() == null ? false : true));
+//		}
 		
 		return o;
 	}
