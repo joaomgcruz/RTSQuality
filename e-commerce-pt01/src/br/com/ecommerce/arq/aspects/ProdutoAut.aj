@@ -2,8 +2,6 @@ package br.com.ecommerce.arq.aspects;
 
 import javax.persistence.Column;
 
-import org.aspectj.lang.annotation.Aspect;
-
 import br.com.ecommerce.arq.dao.GenericDAO;
 import br.com.ecommerce.arq.dao.GenericDAOImpl;
 import br.com.ecommerce.arq.erros.DAOException;
