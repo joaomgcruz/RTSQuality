@@ -2,9 +2,12 @@ package br.ufrn.ppgsc.scenario.analyzer.d.aspects;
 
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Stack;
+
+import javax.faces.context.FacesContext;
 
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.ConstructorSignature;
@@ -61,7 +64,7 @@ public aspect AspectScenario {
 		 */
 		if (isStartMethod(member)) {
 			Scenario ann_scenario = ((Method)member).getAnnotation(Scenario.class);
-			RuntimeCallGraph cg = new RuntimeCallGraph(ann_scenario.name(), node);
+			RuntimeCallGraph cg = new RuntimeCallGraph(ann_scenario.name(), node, getContextParameterMap());
 			ExecutionPaths.getInstance().addRuntimeCallGraph(cg);
 		}
 		else if (nodes_stack.empty()) {
@@ -105,7 +108,7 @@ public aspect AspectScenario {
 	
 	after() throwing(Throwable t) : scenarioExecution() && !executionIgnored()  {
 		setRobustness(t, getMember(thisJoinPoint.getSignature()));
-		//getOrCreateRuntimeNodeStack().pop().setTime(-1);
+		getOrCreateRuntimeNodeStack().pop().setTime(-1);
 	}
 	
 	before(Throwable t) : handler(Throwable+) && args(t) && !executionIgnored() {
@@ -160,5 +163,21 @@ public aspect AspectScenario {
 		}
 		
 		return nodes_stack;
+	}
+	
+	private Map<String, String> getContextParameterMap() {
+		Map<String, String> result = null;
+		FacesContext fc = FacesContext.getCurrentInstance();
+		
+		if (fc != null)
+			result = new HashMap<String, String>(fc.getExternalContext().getRequestParameterMap());
+		
+//		Enumeration<?> e = req.getParameterNames();
+//		while (e.hasMoreElements()) {
+//			String name = (String) e.nextElement();
+//			System.out.println(name + ", " + req.getParameter(name));
+//		}
+		
+		return result;
 	}
 }

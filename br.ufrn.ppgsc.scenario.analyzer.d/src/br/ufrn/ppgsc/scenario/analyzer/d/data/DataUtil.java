@@ -3,6 +3,7 @@ package br.ufrn.ppgsc.scenario.analyzer.d.data;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.util.Iterator;
 
 import br.ufrn.ppgsc.scenario.analyzer.annotations.Performance;
 import br.ufrn.ppgsc.scenario.analyzer.annotations.Reliability;
@@ -12,7 +13,23 @@ import br.ufrn.ppgsc.scenario.analyzer.annotations.Security;
 public abstract class DataUtil {
 	
 	public static void printScenarioTree(RuntimeCallGraph tree, Appendable buffer) throws IOException {
-		buffer.append("Scenario: " + tree.getScenarioName() + " (ID: " + tree.getThreadId() + ")\n   ");
+		buffer.append("Scenario: " + tree.getScenarioName() + " (Id: " + tree.getThreadId() + ", Request: ");
+		
+		if (tree.getContext() != null) {
+			Iterator<String> itr = tree.getContext().values().iterator();
+			while (itr.hasNext()) {
+				buffer.append(itr.next());
+				
+				if (itr.hasNext())
+					buffer.append(", ");
+			}
+		}
+		else {
+			buffer.append("null");
+		}
+		
+		buffer.append(")\n");
+
 		printInOrder(tree.getRoot(), buffer);
 		buffer.append(System.lineSeparator());
 		printTreeNode(tree.getRoot(), "   ", buffer);
