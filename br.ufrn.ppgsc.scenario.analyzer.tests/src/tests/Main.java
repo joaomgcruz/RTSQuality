@@ -35,7 +35,7 @@ public class Main {
 	public static void main(String args[]) throws IOException {
 		Main m = new Main();
 		
-		System.out.println(m.convertToInt("ss10"));
+		System.out.println(m.convertToInt("ss10felipe"));
 		
 		try {
 			System.out.println(m.divide(1, 0));
