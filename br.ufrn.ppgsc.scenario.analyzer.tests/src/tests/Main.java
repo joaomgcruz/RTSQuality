@@ -31,7 +31,7 @@ public class Main {
 		return a / b;
 	}
 
-	@Scenario(name="main")
+//	@Scenario(name="main")
 	public static void main(String args[]) throws IOException {
 		Main m = new Main();
 		
