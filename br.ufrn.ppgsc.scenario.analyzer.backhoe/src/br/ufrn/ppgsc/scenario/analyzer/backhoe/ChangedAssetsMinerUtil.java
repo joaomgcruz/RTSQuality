@@ -10,7 +10,10 @@ import japa.parser.ast.body.VariableDeclarator;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InputStream;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +22,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNURL;
+import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNWCClient;
 
@@ -31,6 +35,52 @@ import br.ufrn.backhoe.repminer.utils.ClassVisitor;
 public class ChangedAssetsMinerUtil {
 	
 	private static final Logger logger = Logger.getLogger(ChangedAssetsMinerUtil.class);
+	
+	public static Collection<UpdatedMethod> filterChangedMethods(List<MethodLimit> limits, List<UpdatedLine> lines) {
+		Map<String, UpdatedMethod> result = new HashMap<String, UpdatedMethod>();
+		
+		for (UpdatedLine l : lines) {
+			for (MethodLimit m : limits) {
+				if (l.getLineNumber() >= m.getStartLine() && l.getLineNumber() <= m.getEndLine()) {
+					UpdatedMethod mu = result.get(m.getSignature());
+					
+					if (mu == null) {
+						mu = new UpdatedMethod(m);
+						result.put(m.getSignature(), mu);
+					}
+					
+					mu.addUpdatedLine(l);
+				}
+			}
+		}
+		
+		return Collections.unmodifiableCollection(result.values());
+	}
+	
+	// path indica um caminho local
+	public static long getCommittedRevisionNumber(String path) throws SVNException {
+		return SVNClientManager.newInstance()
+				.getStatusClient()
+				.doStatus(new File(path), false)
+				.getCommittedRevision()
+				.getNumber();
+	}
+	
+	// path indica um caminho local
+	public static String getRepositoryRelativePath(String path) throws SVNException {
+		return SVNClientManager.newInstance()
+				.getStatusClient()
+				.doStatus(new File(path), false)
+				.getRepositoryRelativePath();
+	}
+	
+	// path indica um caminho local
+	public static String getDecodedRepositoryRootURL(String path) throws SVNException {
+		return SVNClientManager.newInstance()
+				.getStatusClient()
+				.doStatus(new File(path), false)
+				.getRepositoryRootURL().toDecodedString();
+	}
 	
 	public static void retrieveChangedElements(SVNWCClient wcclient, String url, BackhoeClassCL sourceClass, BackhoeClassCL targetClass) {
 		SVNRevision svnSourceRevision = SVNRevision.create(sourceClass.getRevision());
