@@ -27,7 +27,14 @@ public class OperacaoBean {
 	
 	public String operacaoAdicao(){
 		setAlerta("");
-		Operate(new OperacaoAdicao());
+		OperacaoAdicao o = new OperacaoAdicao();
+		try{
+			o.setTermoUm(Float.valueOf(termoUm));
+			o.setTermoDois(Float.valueOf(termoDois));
+			resultado = o.resultado().toString();
+		}catch(NumberFormatException nfe){
+			alerta = "Os valores dos termos só podem receber números.";
+		}
 		return "index";
 	}
 	
