@@ -31,7 +31,7 @@ public class OperacaoBean {
 		try{
 			o.setTermoUm(Float.valueOf(termoUm));
 			o.setTermoDois(Float.valueOf(termoDois));
-			resultado = o.resultado().toString();
+			resultado = o.resultado2().toString();
 		}catch(NumberFormatException nfe){
 			alerta = "Os valores dos termos só podem receber números.";
 		}
