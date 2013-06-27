@@ -2,7 +2,6 @@ package br.ufrn.ui;
 
 import javax.context.RequestScoped;
 
-import br.ufrn.framework.Operacao;
 import br.ufrn.framework.OperacaoAdicao;
 import br.ufrn.framework.OperacaoDivisao;
 import br.ufrn.framework.OperacaoMultiplicacao;
@@ -61,7 +60,7 @@ public class OperacaoBean {
 	 * Realiza a operação.
 	 * @param o
 	 */
-	private void Operate(Operacao o) {
+	private void Operate(br.ufrn.framework.Operacao o) {
 		try{
 			o.setTermoUm(Float.valueOf(termoUm));
 			o.setTermoDois(Float.valueOf(termoDois));
