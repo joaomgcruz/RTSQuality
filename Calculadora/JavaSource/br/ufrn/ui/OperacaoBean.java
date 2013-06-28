@@ -27,26 +27,26 @@ public class OperacaoBean {
 	
 	public String operacaoAdicao(){
 		setAlerta("");
-		 
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
+//		2
+//		3
+//		4
+//		5
+//		6
+//		7
+//		8
+//		9
+//		10
+//		11
+//		12
+//		13
+//		14
+//		15
+//		16
+//		17
+//		18
+//		19
+//		20
 		Operate(new OperacaoAdicao());
 		return "index";
 	}
