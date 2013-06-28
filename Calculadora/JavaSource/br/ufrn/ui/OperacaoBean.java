@@ -33,7 +33,7 @@ public class OperacaoBean {
 	
 	
 	public String operacaoSubtracao(){
-		alerta = "";
+		alerta = " ";
 		Operate(new OperacaoSubtracao());
 		return "index";
 	}
