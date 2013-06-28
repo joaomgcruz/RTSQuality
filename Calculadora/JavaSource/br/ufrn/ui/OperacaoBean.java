@@ -46,7 +46,6 @@ public class OperacaoBean {
 	
 	public String operacaoDivisao(){
 		alerta = "";
-		setAlerta("");
 		Operate(new OperacaoDivisao());
 		return "index";
 	}
