@@ -31,6 +31,7 @@ public class OperacaoBean {
 		return "index";
 	}
 	
+	
 	public String operacaoSubtracao(){
 		alerta = "";
 		Operate(new OperacaoSubtracao());
