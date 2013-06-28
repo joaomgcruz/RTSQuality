@@ -27,6 +27,26 @@ public class OperacaoBean {
 	
 	public String operacaoAdicao(){
 		setAlerta("");
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		Operate(new OperacaoAdicao());
 		return "index";
 	}
