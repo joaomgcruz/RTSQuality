@@ -24,7 +24,7 @@ public class OperacaoBean {
 		alerta = new String("");
 		track = false;
 	}
-	
+//		0
 	public String operacaoAdicao(){
 		setAlerta("");
 //		1
