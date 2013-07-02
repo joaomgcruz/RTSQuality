@@ -24,11 +24,11 @@ public class OperacaoBean {
 		alerta = new String("");
 		track = false;
 	}
-//		0
+//		0 
 	public String operacaoAdicao(){
 		setAlerta("");
 //		1
-//		2
+//		2 
 //		3
 //		4
 //		5
