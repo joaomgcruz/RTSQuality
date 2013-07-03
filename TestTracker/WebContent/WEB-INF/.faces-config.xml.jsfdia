@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PROCESS model-entity="JSFProcess">
+ <PROCESS-ITEM NAME="rules:#reports.jsp" PATH="/reports.jsp"
+  SHAPE="181,98,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules:#reports.jsp:0" NAME="item"
+   PATH="/reports.jsp" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="reports::#reports.jsp" NAME="output"
+    PATH="/reports.jsp" TARGET="rules:#reports.jsp" TITLE="reports" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+</PROCESS>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config version="2.1" xmlns="http://java.sun.com/xml/ns/javaee"
+ xmlns:xi="http://www.w3.org/2001/XInclude"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_1.xsd">
+ <managed-bean>
+  <managed-bean-name>testTrackerBean</managed-bean-name>
+  <managed-bean-class>br.ufrn.taskanalyser.framework.ui.TestTrackerBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ <managed-bean>
+  <managed-bean-name>testCoverageMapping</managed-bean-name>
+  <managed-bean-class>br.ufrn.taskanalyser.framework.TestCoverageMapping</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ <navigation-rule>
+  <from-view-id>/reports.jsp</from-view-id>
+  <navigation-case>
+   <from-outcome>reports</from-outcome>
+   <to-view-id>/reports.jsp</to-view-id>
+  </navigation-case>
+ </navigation-rule>
+</faces-config>
