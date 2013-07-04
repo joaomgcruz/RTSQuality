@@ -19,6 +19,13 @@
 <table>
 	<tr>
 		<td>
+			<h:commandButton action="#{testTrackerBean.runTests}" type="submit" value="Run AllTests"/>
+		</td>
+	</tr>
+</table>
+<table>
+	<tr>
+		<td>
 			<h:inputTextarea value="#{testTrackerBean.text}" style="width: 500px;height: 200px"/>
 		</td>
 	</tr>

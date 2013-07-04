@@ -15,6 +15,13 @@ import java.util.Set;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
+import junit.framework.TestSuite;
+
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
+import org.junit.runners.AllTests;
+import org.junit.runners.JUnit4;
 import org.tmatesoft.svn.core.SVNException;
 
 import br.ufrn.taskanalyser.framework.Input;
@@ -49,6 +56,23 @@ public class TestTrackerBean {
 	
 	public String save(){
 		saveWithName("ManualTests");
+		return "reports";
+	}
+	
+	public String runTests(){
+		try {
+			String allTestsClass = "testtracker.tests.AllTests";
+			text = allTestsClass;
+			System.out.println(allTestsClass);
+			Result result = JUnitCore.runClasses(Class.forName(allTestsClass));
+			for (Failure failure : result.getFailures()) {
+				System.out.println(failure.toString());
+			}
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "reports";
+		}
 		return "reports";
 	}
 	

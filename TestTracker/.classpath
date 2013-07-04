@@ -21,7 +21,7 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/org.hamcrest.core_1.1.0.v20090501071000.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/backhoe"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/br.ufrn.ppgsc.scenario.analyzer.backhoe"/>
-	<classpathentry kind="var" path="M2_REPO/org/tmatesoft/svnkit/svnkit/1.7.6/svnkit-1.7.6.jar"/>
-	<classpathentry kind="var" path="M2_REPO/de/regnis/q/sequence/sequence-library/1.0.2/sequence-library-1.0.2.jar" sourcepath="/source/sequence-library-1.0.2-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/sequence-library-1.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/svnkit-1.7.6.jar"/>
 	<classpathentry kind="output" path="WebContent/WEB-INF/classes"/>
 </classpath>
