@@ -1,4 +1,4 @@
-package br.ufrn.dimap.taskanalyser.history;
+package br.ufrn.dimap.taskanalyzer.history;
 
 public class SVNConfig {
 	private String svnUrl;

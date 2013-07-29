@@ -1,10 +1,10 @@
-package br.ufrn.dimap.taskanalyser;
+package br.ufrn.dimap.taskanalyzer;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import br.ufrn.testtracker.data.CoveredMethod;
+import br.ufrn.dimap.testtracker.data.CoveredMethod;
 
 public class TestExecution {
 	

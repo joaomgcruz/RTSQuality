@@ -1,4 +1,4 @@
-package br.ufrn.dimap.taskanalyser.history;
+package br.ufrn.dimap.taskanalyzer.history;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

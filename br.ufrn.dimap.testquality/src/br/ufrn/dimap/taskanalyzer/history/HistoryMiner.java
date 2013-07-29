@@ -1,4 +1,4 @@
-package br.ufrn.dimap.taskanalyser.history;
+package br.ufrn.dimap.taskanalyzer.history;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,7 +8,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.tmatesoft.svn.core.SVNException;
 
-import br.ufrn.dimap.taskanalyser.plugin.actions.SampleAction;
+import br.ufrn.dimap.taskanalyzer.plugin.actions.SampleAction;
 
 public class HistoryMiner {
 	

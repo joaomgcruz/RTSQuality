@@ -1,4 +1,4 @@
-package br.ufrn.dimap.taskanalyser.regressiontest;
+package br.ufrn.dimap.taskanalyzer.regressiontest;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -6,12 +6,11 @@ import java.util.Set;
 
 import org.tmatesoft.svn.core.SVNException;
 
-import br.ufrn.dimap.taskanalyser.history.HistoryMiner;
-import br.ufrn.dimap.taskanalyser.history.SVNConfig;
-import br.ufrn.testtracker.data.CoveredMethod;
-import br.ufrn.testtracker.data.MethodData;
-import br.ufrn.testtracker.data.TestCoverage;
-import br.ufrn.testtracker.data.TestCoverageMapping;
+import br.ufrn.dimap.taskanalyzer.history.HistoryMiner;
+import br.ufrn.dimap.taskanalyzer.history.SVNConfig;
+import br.ufrn.dimap.testtracker.data.CoveredMethod;
+import br.ufrn.dimap.testtracker.data.TestCoverage;
+import br.ufrn.dimap.testtracker.data.TestCoverageMapping;
 
 public class DiffRegressionTest extends RegressionTestTechnique {
 	private SVNConfig sVNConfig;

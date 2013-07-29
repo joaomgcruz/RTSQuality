@@ -1,4 +1,4 @@
-package br.ufrn.dimap.taskanalyser.plugin.actions;
+package br.ufrn.dimap.taskanalyzer.plugin.actions;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -37,12 +37,12 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
 import org.tmatesoft.svn.core.SVNException;
 
-import br.ufrn.dimap.taskanalyser.history.History;
-import br.ufrn.dimap.taskanalyser.history.SVNConfig;
-import br.ufrn.dimap.taskanalyser.ui.Revision;
-import br.ufrn.dimap.taskanalyser.ui.Task;
-import br.ufrn.testtracker.data.TestCoverage;
-import br.ufrn.testtracker.data.TestCoverageMapping;
+import br.ufrn.dimap.taskanalyzer.history.History;
+import br.ufrn.dimap.taskanalyzer.history.SVNConfig;
+import br.ufrn.dimap.taskanalyzer.ui.Revision;
+import br.ufrn.dimap.taskanalyzer.ui.Task;
+import br.ufrn.dimap.testtracker.data.TestCoverage;
+import br.ufrn.dimap.testtracker.data.TestCoverageMapping;
 
 /**
  * Our sample action implements workbench action delegate.

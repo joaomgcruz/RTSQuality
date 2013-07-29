@@ -1,4 +1,4 @@
-package br.ufrn.dimap.taskanalyser.history;
+package br.ufrn.dimap.taskanalyzer.history;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -52,8 +52,8 @@ import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNUpdateClient;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
-import br.ufrn.dimap.taskanalyser.plugin.Activator;
-import br.ufrn.dimap.taskanalyser.plugin.actions.SysOutProgressMonitor;
+import br.ufrn.dimap.taskanalyzer.plugin.Activator;
+import br.ufrn.dimap.taskanalyzer.plugin.actions.SysOutProgressMonitor;
 import br.ufrn.ppgsc.scenario.analyzer.backhoe.UpdatedMethod;
 
 import com.thoughtworks.xstream.XStream;

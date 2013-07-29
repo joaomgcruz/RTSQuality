@@ -1,14 +1,13 @@
-package br.ufrn.dimap.taskanalyser;
+package br.ufrn.dimap.taskanalyzer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import br.ufrn.testtracker.data.CoveredMethod;
-import br.ufrn.testtracker.data.Input;
-import br.ufrn.testtracker.data.MethodData;
-import br.ufrn.testtracker.data.TestCoverage;
+import br.ufrn.dimap.testtracker.data.CoveredMethod;
+import br.ufrn.dimap.testtracker.data.Input;
+import br.ufrn.dimap.testtracker.data.TestCoverage;
 
 public class Selection {
 

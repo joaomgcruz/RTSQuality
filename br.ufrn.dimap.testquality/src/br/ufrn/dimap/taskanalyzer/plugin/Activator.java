@@ -1,4 +1,4 @@
-package br.ufrn.dimap.taskanalyser.plugin;
+package br.ufrn.dimap.taskanalyzer.plugin;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;

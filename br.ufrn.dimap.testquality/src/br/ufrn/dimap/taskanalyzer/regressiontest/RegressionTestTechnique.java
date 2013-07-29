@@ -1,9 +1,9 @@
-package br.ufrn.dimap.taskanalyser.regressiontest;
+package br.ufrn.dimap.taskanalyzer.regressiontest;
 
 import java.util.Set;
 
-import br.ufrn.testtracker.data.TestCoverage;
-import br.ufrn.testtracker.data.TestCoverageMapping;
+import br.ufrn.dimap.testtracker.data.TestCoverage;
+import br.ufrn.dimap.testtracker.data.TestCoverageMapping;
 
 public abstract class RegressionTestTechnique {
 	protected TestCoverageMapping testCoverageMapping;

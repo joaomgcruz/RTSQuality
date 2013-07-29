@@ -1,4 +1,4 @@
-package br.ufrn.dimap.taskanalyser.plugin.actions;
+package br.ufrn.dimap.taskanalyzer.plugin.actions;
 
 import java.io.PrintStream;
 import java.text.DecimalFormat;

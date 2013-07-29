@@ -1,4 +1,4 @@
-package br.ufrn.dimap.taskanalyser.ui;
+package br.ufrn.dimap.taskanalyzer.ui;
 
 import java.util.List;
 
