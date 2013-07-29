@@ -9,16 +9,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
@@ -26,10 +22,8 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IAccessRule;
@@ -116,9 +110,6 @@ public class History {
     	InputStream inputStream = new FileInputStream(iWorkspace.getRoot().getLocation().toString()+"/"+iProject.getName()+"/.project");
     	final IProjectDescription iProjectDescription = iWorkspace.loadProjectDescription(inputStream);
     	
-    	copyFile(iProject, "/lib/aspectjweaver.jar");
-    	copyFile(iProject, "/lib/testtracker.jar");
-    	
     	iWorkspace.run(new IWorkspaceRunnable() {
     		@Override
     		public void run(IProgressMonitor monitor) throws CoreException {
@@ -132,6 +123,9 @@ public class History {
     			}
     		}
     	}, iWorkspace.getRoot(), IWorkspace.AVOID_UPDATE, new SysOutProgressMonitor());
+    	
+    	copyFile(iProject, "/lib/aspectjweaver.jar");
+    	copyFile(iProject, "/lib/testtracker.jar");
     	
     	SysOutProgressMonitor.out.println("Eclipse project imported");
 
@@ -242,8 +236,8 @@ public class History {
 	private void copyFile(IProject iProject, String relativePath) {
 		try{
     	    File f1 = new File(findResolveURL(relativePath));
-    	    File f2 = new File(iProject.getFullPath().toString()+"/lib");
-    	    File f3 = new File(iProject.getFullPath().toString()+relativePath);
+    	    File f2 = new File(iProject.getLocation().toString()+"/lib");
+    	    File f3 = new File(iProject.getLocation().toString()+relativePath);
     		if(!f2.exists())
     			f2.mkdir();
     		InputStream in = new FileInputStream(f1);

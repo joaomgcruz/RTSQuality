@@ -18,7 +18,7 @@ import br.ufrn.dimap.testtracker.data.TestCoverage;
 import br.ufrn.dimap.testtracker.data.TestCoverageMapping;
 
 public aspect TestTracker {
-	private pointcut exclusion() : !within(br.ufrn.testtracker..*);
+	private pointcut exclusion() : !within(br.ufrn.dimap.testtracker..*) && !within(br.ufrn.dimap.taskanalyzer..*);
 	private pointcut beforeExecutions() :
 		cflow(
 			(

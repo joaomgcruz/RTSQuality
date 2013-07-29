@@ -13,7 +13,11 @@
 	<classpathentry kind="lib" path="D:/UFRN/Scenario-analyzer/eclipse/plugins/org.eclipse.debug.ui_3.8.1.v20120718-192144.jar"/>
 	<classpathentry kind="lib" path="D:/UFRN/Scenario-analyzer/eclipse/plugins/org.tmatesoft.svnkit_1.7.9.r9659_v20130411_2103.jar"/>
 	<classpathentry kind="lib" path="D:/UFRN/Scenario-analyzer/eclipse/plugins/org.eclipse.jdt.junit_3.7.100.v20120523-1543.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/br.ufrn.dimap.testtracker"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/br.ufrn.ppgsc.scenario.analyzer.backhoe"/>
+	<classpathentry kind="src" path="/br.ufrn.dimap.testtracker">
+		<attributes>
+			<attribute name="org.eclipse.ajdt.inpath" value="org.eclipse.ajdt.inpath"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
