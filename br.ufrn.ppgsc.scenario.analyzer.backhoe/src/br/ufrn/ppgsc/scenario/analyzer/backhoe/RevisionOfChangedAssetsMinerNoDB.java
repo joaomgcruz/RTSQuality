@@ -25,8 +25,8 @@ public class RevisionOfChangedAssetsMinerNoDB extends Miner {
 		logger.info("performSetup...");
 		
 		String targetPath = (String) parameters.get("target_path");
-		long startRevision = Long.parseLong((String) parameters.get("start_revision"));
-		long endRevision = Long.parseLong((String) parameters.get("end_revision"));
+		long startRevision = (long) parameters.get("start_revision");
+		long endRevision = (long) parameters.get("end_revision");
 		
 		SubversionConnector svnConnector = (SubversionConnector) connectors.get(ConnectorType.SVN);
 		SVNRepository repository = svnConnector.getEncapsulation();
@@ -73,20 +73,23 @@ public class RevisionOfChangedAssetsMinerNoDB extends Miner {
 		// Pega os métodos mudados verificando as linhas mudadas e os limites dos métodos
 		changedMethods = ChangedAssetsMinerUtil.filterChangedMethods(limits, lines);
 		
+		// Usei este artifício para desenvolver o resultado da mineração
+		parameters.put("result", changedMethods);
+		
 		// Mostra o resultado
-		for (UpdatedMethod m : changedMethods) {
-			System.out.println("******************************************");
-			System.out.println(m.getMethodLimit().getSignature());
-			
-			for (UpdatedLine l : m.getUpdatedLines()) {
-				System.out.println("\tAuthor: " + l.getAuthor());
-				System.out.println("\tLine: " + l.getLine());
-				System.out.println("\tLineNumber: " + l.getLineNumber());
-				System.out.println("\tRevision: " + l.getRevision());
-				System.out.println("\tDate: " + l.getDate());
-				System.out.println("\t-------------------------------------");
-			}
-		}
+//		for (UpdatedMethod m : changedMethods) {
+//			System.out.println("******************************************");
+//			System.out.println(m.getMethodLimit().getSignature());
+//			
+//			for (UpdatedLine l : m.getUpdatedLines()) {
+//				System.out.println("\tAuthor: " + l.getAuthor());
+//				System.out.println("\tLine: " + l.getLine());
+//				System.out.println("\tLineNumber: " + l.getLineNumber());
+//				System.out.println("\tRevision: " + l.getRevision());
+//				System.out.println("\tDate: " + l.getDate());
+//				System.out.println("\t-------------------------------------");
+//			}
+//		}
 	}
 
 }
