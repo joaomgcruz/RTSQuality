@@ -35,11 +35,24 @@ public class RevisionOfChangedAssetsMinerNoDB extends Miner {
 		client.setAuthenticationManager(repository.getAuthenticationManager());
 		
 		try {
+			/* Acha quem foi a última pessoa que alterou cada linha.
+			 * Para isso doAnnotate olha um conjunto de revisões anteriores e diz quem
+			 * foi a última pessoa que alterou a linha antes de chegar na revisão final.
+			 * Se a revisão que alterou aquela linha não está no intervalo de revisões considerado,
+			 * ela é considerada como não alterada, retornando -1 para o número da revisão
+			 * e null para os outros elementos.
+			 * 
+			 * O número da linha retornada é referente ao arquivo da versão final (arquivo de referência)
+			 * 
+			 * Ainda não entendi o que é a pegRevision, não vi diferença mudando o valor passado,
+			 * então estou passando null e funciona!
+			 */
+			
 			handler = new UpdatedLinesHandler();
 			
 			client.getLogClient().doAnnotate(
 					SVNURL.parseURIEncoded(svnConnector.getUrl() + targetPath),
-					SVNRevision.HEAD,
+					null,
 					SVNRevision.create(startRevision),
 					SVNRevision.create(endRevision),
 					true, true, handler, null);
@@ -51,10 +64,16 @@ public class RevisionOfChangedAssetsMinerNoDB extends Miner {
 	public void performMining() {
 		logger.info("performMining...");
 		
+		// Pega as linhas modificadas
 		List<UpdatedLine> lines = handler.getChangedLines();
+		
+		// Pega o limite dos limites (linha inicial e final)
 		List<MethodLimit> limits = new MethodLimitBuilder(handler.getSourceCode()).getMethodLimits();
+		
+		// Pega os métodos mudados verificando as linhas mudadas e os limites dos métodos
 		changedMethods = ChangedAssetsMinerUtil.filterChangedMethods(limits, lines);
 		
+		// Mostra o resultado
 		for (UpdatedMethod m : changedMethods) {
 			System.out.println("******************************************");
 			System.out.println(m.getMethodLimit().getSignature());
