@@ -15,6 +15,6 @@
 	<classpathentry kind="lib" path="D:/UFRN/Scenario-analyzer/eclipse/plugins/org.tmatesoft.svnkit_1.7.9.r9659_v20130411_2103.jar"/>
 	<classpathentry kind="lib" path="D:/UFRN/Scenario-analyzer/eclipse/plugins/org.eclipse.jdt.junit_3.7.100.v20120523-1543.jar"/>
 	<classpathentry kind="lib" path="lib/testtracker.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/TestTracker"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/br.ufrn.dimap.testtracker"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
