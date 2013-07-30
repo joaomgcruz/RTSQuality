@@ -27,13 +27,13 @@ public class Produto extends CadastroDB {
 	private String nome;
 
 	/**
-	 * Preço do produto 
+	 * Preï¿½o do produto 
 	 */
 
 	private double preco;
 
 	/**
-	 * Observações importantes que devem ser mostradas ao consumidor.
+	 * Observaï¿½ï¿½es importantes que devem ser mostradas ao consumidor.
 	 */
 	@Column(length = 2048)
 	private String observacao;
@@ -78,6 +78,17 @@ public class Produto extends CadastroDB {
 
 	private double Weight;
 
+	@Column(name="autorizado",columnDefinition="autorizado") 
+	private boolean autorizado;
+	
+	public void setAutorizado(boolean autorizado) {
+		this.autorizado = autorizado;
+	}
+	
+	public boolean isAutorizado() {
+		return autorizado;
+	}
+	
 	public Produto() {
 
 	}

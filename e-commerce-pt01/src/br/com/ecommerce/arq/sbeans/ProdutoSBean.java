@@ -11,7 +11,7 @@ import br.com.ecommerce.arq.erros.DAOException;
 import br.com.ecommerce.dominio.produto.Produto;
 
 /**
- * Session Bean relativo a opera?›es com produto.
+ * Session Bean relativo a opera?ï¿½es com produto.
  * @author Mario Torres
  *
  */
@@ -36,6 +36,19 @@ public class ProdutoSBean extends AbstractSBean {
 		Produto produto = dao.findByPrimaryKey(idProduto, Produto.class);
 	
 		produto.setInativo(true);
+		dao.update(produto);
+		try{
+			dao.save(produto);
+		}finally{
+			dao.close();
+		}
+	}
+	
+	public void autorizarProduto(int idProduto) throws DAOException {
+		GenericDAO dao = getDAO(GenericDAOImpl.class);
+		Produto produto = dao.findByPrimaryKey(idProduto, Produto.class);
+		
+		produto.setAutorizado(true);
 		dao.update(produto);
 		try{
 			dao.save(produto);
