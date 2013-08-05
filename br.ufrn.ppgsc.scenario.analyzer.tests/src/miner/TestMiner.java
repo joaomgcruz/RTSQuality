@@ -16,6 +16,8 @@ public class TestMiner {
 				"C:/Eclipse/EclipseDoutorado/workspace/br.ufrn.ppgsc.scenario.analyzer.tests_oldrevision/src/tests/Main.java",
 				"C:/Eclipse/EclipseDoutorado/workspace/br.ufrn.ppgsc.scenario.analyzer.tests/src/tests/Main.java");
 		
+		
+		
 		for (UpdatedMethod m : result) {
 			System.out.println("******************************************");
 			System.out.println(m.getMethodLimit().getSignature());
@@ -26,6 +28,11 @@ public class TestMiner {
 				System.out.println("\tLineNumber: " + l.getLineNumber());
 				System.out.println("\tRevision: " + l.getRevision());
 				System.out.println("\tDate: " + l.getDate());
+				System.out.print("\tTasks: ");
+				
+				for (long task : l.getTasks())
+					System.out.println(task + " ");
+				
 				System.out.println("\t-------------------------------------");
 			}
 		}
