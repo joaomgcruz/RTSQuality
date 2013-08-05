@@ -30,6 +30,8 @@ public class AnalyzerMiner {
 		} catch (SVNException e) {
 			e.printStackTrace();
 		}
+		
+		System.out.println("Revisions: " + old_revision + " - " + new_revision);
 
 		Map parameters = new HashMap<String, String>();
 		parameters.put("target_path", file_path);
@@ -57,6 +59,7 @@ public class AnalyzerMiner {
 		connectors.put(ConnectorType.SVN, svnConnector);
 
 		Map parameters = new HashMap<String, String>();
+		parameters.put("target_path", file_path);
 		parameters.put("start_revision", old_revision);
 		parameters.put("end_revision", new_revision);
 

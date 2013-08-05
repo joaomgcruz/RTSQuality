@@ -19,7 +19,7 @@ public class RevisionOfChangedAssetsMinerNoDB extends Miner {
 	private final Logger logger = Logger.getLogger(RevisionOfChangedAssetsMinerNoDB.class);
 	
 	private Collection<UpdatedMethod> changedMethods;
-	private UpdatedLinesHandler handler;
+	private UpdatedLinesHandlerIProject handler;
 	
 	public void performSetup() {
 		logger.info("performSetup...");
@@ -48,14 +48,14 @@ public class RevisionOfChangedAssetsMinerNoDB extends Miner {
 			 * então estou passando null e funciona!
 			 */
 			
-			handler = new UpdatedLinesHandler();
+			handler = new UpdatedLinesHandlerIProject();
 			
 			client.getLogClient().doAnnotate(
 					SVNURL.parseURIEncoded(svnConnector.getUrl() + targetPath),
 					null,
 					SVNRevision.create(startRevision),
 					SVNRevision.create(endRevision),
-					true, true, handler, null);
+					handler);
 		} catch (SVNException ex) {
 			ex.printStackTrace();
 		}

@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class IProjectDAO {
 	
@@ -12,14 +14,17 @@ public class IProjectDAO {
 	
 	public IProjectDAO() {
 		try {
-			connection = null;//apagado aqui
+			connection = DriverManager.getConnection(
+					"",
+					"",
+					"");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public long getTaskNumberByRevision(long revision) {
-		long task_number = 0;
+	public List<Long> getTaskNumberByRevision(long revision) {
+		List<Long> task_numbers = new ArrayList<Long>();
 		
 		try {
 			
@@ -29,29 +34,37 @@ public class IProjectDAO {
 			 */
 			
 			PreparedStatement stmt = connection.prepareStatement(
-					"SELECT tarefa.numtarefa"
-					+ " FROM iproject.log_tarefa INNER JOIN iproject.tarefa"
-					+ " ON tarefa.id_tarefa = log_tarefa.id_tarefa AND revision = ?");
+					"SELECT DISTINCT tarefa.numtarefa FROM iproject.log_tarefa INNER JOIN iproject.tarefa "
+					+ "ON tarefa.id_tarefa = log_tarefa.id_tarefa AND "
+					+ "(log_tarefa.revision = ? OR EXISTS "
+					+ "(SELECT regexp_matches(log_tarefa.log, '(Revisão|revisão|Revisao|revisao)[:| ]+" + revision + "[ |.|,|\n]')))");
 			
 			stmt.setString(1, String.valueOf(revision));
 			
 			ResultSet rs = stmt.executeQuery();
 			
 			/* Coloquei em um While, mas não vejo como iria retornar
-			 * mais de uma buscando pela revisão
+			 * mais de uma buscando pela revisão. Suponho que uma tarefa
+			 * pode envolver várias revisões, mas uma revisão é gerado devido
+			 * uma única tarefa, então o resultado deveria ser um conjunto de
+			 * um elemento.
+			 * 
+			 * Isso não é verdade, curiosamente a revisão pode estar associada
+			 * com mais de uma tarefa, pensebi quando testei para a revisão 70315  
 			 */
 			while (rs.next())
-				task_number = Long.valueOf(rs.getString(1));
+				task_numbers.add(Long.valueOf(rs.getString(1)));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
-		return task_number;
+		return task_numbers;
 	}
 	
 	public static void main(String[] args) {
 		IProjectDAO dao = new IProjectDAO();
-		System.out.println(dao.getTaskNumberByRevision(74982));
+		for (long number : dao.getTaskNumberByRevision(70315))
+			System.out.println(number);
 	}
 	
 }

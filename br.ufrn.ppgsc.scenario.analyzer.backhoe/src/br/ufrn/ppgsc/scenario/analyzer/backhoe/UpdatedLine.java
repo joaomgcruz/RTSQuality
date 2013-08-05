@@ -1,18 +1,21 @@
 package br.ufrn.ppgsc.scenario.analyzer.backhoe;
 
 import java.util.Date;
+import java.util.List;
 
 public class UpdatedLine {
 
 	private Date date;
 	private long revision;
+	private List<Long> tasks;
 	private String author;
 	private String line;
 	private int lineNumber;
 
-	public UpdatedLine(Date date, long revision, String author, String line, int lineNumber) {
+	public UpdatedLine(Date date, long revision, List<Long> tasks, String author, String line, int lineNumber) {
 		this.date = date;
 		this.revision = revision;
+		this.tasks = tasks;
 		this.author = author;
 		this.line = line;
 		this.lineNumber = lineNumber;
@@ -32,6 +35,14 @@ public class UpdatedLine {
 
 	public void setRevision(long revision) {
 		this.revision = revision;
+	}
+	
+	public List<Long> getTasks() {
+		return tasks;
+	}
+
+	public void setTasks(List<Long> tasks) {
+		this.tasks = tasks;
 	}
 
 	public String getAuthor() {
