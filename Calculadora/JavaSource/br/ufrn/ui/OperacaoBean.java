@@ -26,15 +26,8 @@ public class OperacaoBean {
 	}
 
 	public String operacaoAdicao(){
-		alerta = "";
-		OperacaoAdicao o = new OperacaoAdicao();
-		try{
-			o.setTermoUm(Float.valueOf(termoUm));
-			o.setTermoDois(Float.valueOf(termoDois));
-			resultado = o.resultado().toString();
-		}catch(NumberFormatException nfe){
-			alerta = "Os valores dos termos só podem receber números.";
-		}
+		setAlerta("");
+		Operate(new OperacaoAdicao());
 		return "index";
 	}
 	
@@ -52,7 +45,14 @@ public class OperacaoBean {
 	
 	public String operacaoDivisao(){
 		alerta = "";
-		Operate(new OperacaoDivisao());
+		OperacaoDivisao o = new OperacaoDivisao();
+		try{
+			o.setTermoUm(Float.valueOf(termoUm));
+			o.setTermoDois(Float.valueOf(termoDois));
+			resultado = o.resultado().toString();
+		}catch(NumberFormatException nfe){
+			alerta = "Os valores dos termos só podem receber números.";
+		}
 		return "index";
 	}
 	
