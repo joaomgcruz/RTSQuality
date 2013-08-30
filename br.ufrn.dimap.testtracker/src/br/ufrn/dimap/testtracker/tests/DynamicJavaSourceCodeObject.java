@@ -1,4 +1,4 @@
-package br.ufrn.dimap.taskanalyzer.regressiontest;
+package br.ufrn.dimap.testtracker.tests;
 
 import java.io.IOException;
 import java.net.URI;

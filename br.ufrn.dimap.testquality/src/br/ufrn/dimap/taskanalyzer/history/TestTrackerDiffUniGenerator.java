@@ -50,11 +50,12 @@ public class TestTrackerDiffUniGenerator extends QDiffSequenceGenerator implemen
 
 	protected void processBlock(QSequenceDifferenceBlock[] segment, QSequenceLineCache sourceLines, QSequenceLineCache targetLines,
 	                            String encoding, Writer output) throws IOException {
+		int diffSize = 0;
 		for (int i = 0; i < segment.length; i++) {
 			QSequenceDifferenceBlock block = segment[i];
 			for (int j = block.getLeftFrom(); j <= block.getLeftTo(); j++) {
 				String line = printLine(sourceLines.getLine(j), encoding);
-				print("        <br.ufrn.ppgsc.scenario.analyzer.backhoe.UpdatedLine>", output);
+				print("        <br.ufrn.dimap.taskanalyzer.history.UpdatedLine>", output);
 				print(getEOL(), output);
 				print("          "+(new XStream()).toXML(new Date()), output);
 				print(getEOL(), output);
@@ -66,12 +67,12 @@ public class TestTrackerDiffUniGenerator extends QDiffSequenceGenerator implemen
 				print(getEOL(), output);
 				print("          <lineNumber>-"+(j+1)+"</lineNumber>", output);
 				print(getEOL(), output);
-				print("        </br.ufrn.ppgsc.scenario.analyzer.backhoe.UpdatedLine>", output);
+				print("        </br.ufrn.dimap.taskanalyzer.history.UpdatedLine>", output);
 				print(getEOL(), output);
 			}
 			for (int j = block.getRightFrom(); j <= block.getRightTo(); j++) {
 				String line = printLine(targetLines.getLine(j), encoding);
-				print("        <br.ufrn.ppgsc.scenario.analyzer.backhoe.UpdatedLine>", output);
+				print("        <br.ufrn.dimap.taskanalyzer.history.UpdatedLine>", output);
 				print(getEOL(), output);
 				print("          "+(new XStream()).toXML(new Date()), output);
 				print(getEOL(), output);
@@ -81,16 +82,13 @@ public class TestTrackerDiffUniGenerator extends QDiffSequenceGenerator implemen
 				print(getEOL(), output);
 				print("          <line>"+line+"</line>", output);
 				print(getEOL(), output);
-				print("          <lineNumber>+"+(j+1)+"</lineNumber>", output);
+				print("          <lineNumber>+"+(-diffSize+j+1)+"</lineNumber>", output);
 				print(getEOL(), output);
-				print("        </br.ufrn.ppgsc.scenario.analyzer.backhoe.UpdatedLine>", output);
+				print("        </br.ufrn.dimap.taskanalyzer.history.UpdatedLine>", output);
 				print(getEOL(), output);
 			}
+//			diffSize += -(block.getLeftFrom()-block.getLeftTo()+1)+(block.getRightFrom()-block.getRightTo()+1);
 		}
-		print("      </changedLines>", output);
-		print(getEOL(), output);
-		print("    </br.ufrn.taskanalyser.framework.miner.ClassUpdates>", output);
-		print(getEOL(), output);
 	}
 
 	public QDiffGenerator createGenerator(@SuppressWarnings("rawtypes") Map properties) {

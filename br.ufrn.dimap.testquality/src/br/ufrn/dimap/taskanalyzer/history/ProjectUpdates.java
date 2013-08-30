@@ -1,14 +1,12 @@
 package br.ufrn.dimap.taskanalyzer.history;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import br.ufrn.ppgsc.scenario.analyzer.backhoe.ChangedAssetsMinerUtil;
-import br.ufrn.ppgsc.scenario.analyzer.backhoe.MethodLimit;
-import br.ufrn.ppgsc.scenario.analyzer.backhoe.MethodLimitBuilder;
-import br.ufrn.ppgsc.scenario.analyzer.backhoe.UpdatedLine;
-import br.ufrn.ppgsc.scenario.analyzer.backhoe.UpdatedMethod;
+import br.ufrn.dimap.testtracker.data.Revision;
+import br.ufrn.dimap.testtracker.util.FileUtil;
 
 public class ProjectUpdates {
 	private List<ClassUpdates> classUpdates;
@@ -17,23 +15,27 @@ public class ProjectUpdates {
 		classUpdates = new ArrayList<ClassUpdates>();
 	}
 	
-	public Collection<UpdatedMethod> getUpdatedMethods(long rev1, long rev2) {
+	public Collection<UpdatedMethod> getUpdatedMethods(Revision rev1, Revision rev2) {
 		Collection<UpdatedMethod> updatedMethods = new ArrayList<UpdatedMethod>();
 		for (ClassUpdates classUpdate : classUpdates) {
 			List<UpdatedLine> removedLines = new ArrayList<UpdatedLine>(); 
 			List<UpdatedLine> addedLines = new ArrayList<UpdatedLine>();
 			for (UpdatedLine updatedLine : classUpdate.getChangedLines()) {
 				if(updatedLine.getLineNumber()<0){
-					updatedLine.setRevision(rev1);
+					updatedLine.setRevision(rev1.getId());
 					removedLines.add(updatedLine);
 				}
 				else{
-					updatedLine.setRevision(rev2);
+					updatedLine.setRevision(rev2.getId());
 					addedLines.add(updatedLine);
 				}
 			}
-			List<MethodLimit> oldLimits = (new MethodLimitBuilder(classUpdate.getClassSourceCode1())).getMethodLimits();
-			List<MethodLimit> newLimits = (new MethodLimitBuilder(classUpdate.getClassSourceCode2())).getMethodLimits();
+			File oldFile = new File(classUpdate.getClassSourceCode1());
+			MethodLimitBuilder mLBOld = new MethodLimitBuilder(FileUtil.loadTextFromFile(oldFile));
+			List<MethodLimit> oldLimits = mLBOld.getMethodLimits();
+			File newFile = new File(classUpdate.getClassSourceCode2());
+			MethodLimitBuilder mLBNew = new MethodLimitBuilder(FileUtil.loadTextFromFile(newFile));
+			List<MethodLimit> newLimits = mLBNew.getMethodLimits();
 			updatedMethods.addAll(ChangedAssetsMinerUtil.filterChangedMethods(oldLimits, removedLines));
 			updatedMethods.addAll(ChangedAssetsMinerUtil.filterChangedMethods(newLimits, addedLines));
 		}

@@ -1,11 +1,19 @@
 package br.ufrn.dimap.testtracker.aspects;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.ConstructorSignature;
@@ -16,8 +24,11 @@ import br.ufrn.dimap.testtracker.data.CoveredMethod;
 import br.ufrn.dimap.testtracker.data.Input;
 import br.ufrn.dimap.testtracker.data.TestCoverage;
 import br.ufrn.dimap.testtracker.data.TestCoverageMapping;
+import br.ufrn.dimap.testtracker.util.FileUtil;
 
 public aspect TestTracker {
+	private static final Integer NOTFOUND = -1;
+	
 	private pointcut exclusion() : !within(br.ufrn.dimap.testtracker..*) && !within(br.ufrn.dimap.taskanalyzer..*);
 	private pointcut beforeExecutions() :
 		cflow(
@@ -97,18 +108,23 @@ public aspect TestTracker {
 		Member member = getMember(signature);
 		TestCoverage testCoverage = TestCoverageMapping.getInstance().getOpenedTestCoverage(threadId);
 		if(testCoverage == null){
-			if(isTestMethod(member) || isManagedBeanMethod(member)){
+			if(isTestClassMember(member) || isManagedBeanMember(member)){
 				testCoverage = new TestCoverage();
-				if(isTestMethod(member) || isActionMethod(member))
+				if(isTestMethod(member) || isActionMethod(member)) {
 					testCoverage.setSignature(signature.toString());
-				testCoverage.setManual(isManagedBeanMethod(member));
+					testCoverage.setClassFullName(member.getDeclaringClass().getCanonicalName()); //TODO: Verificar se é realmente esta String que procuro (deve ser o nome da classe com o pacote)
+					testCoverage.setManual(!isTestClassMember(member) && isManagedBeanMember(member));
+				}
 				testCoverage.addCoveredMethod(signature.toString(), getInputs(member, thisJoinPoint.getArgs()));
 				TestCoverageMapping.getInstance().getTestsCoverageBuilding().put(threadId, testCoverage);
 			}
 		}
 		else{
-			if(testCoverage.isManual() && testCoverage.getSignature().isEmpty() && isActionMethod(member))
+			if(testCoverage.getSignature().isEmpty() && ((!testCoverage.isManual() && isTestMethod(member)) || (testCoverage.isManual() && isActionMethod(member)))) {
 				testCoverage.setSignature(signature.toString());
+				testCoverage.setClassFullName(member.getDeclaringClass().getCanonicalName());
+				testCoverage.setManual(!isTestClassMember(member) && isManagedBeanMember(member));
+			}
 			testCoverage.addCoveredMethod(signature.toString(), getInputs(member, thisJoinPoint.getArgs()));
 		}
 	}
@@ -119,11 +135,20 @@ public aspect TestTracker {
 		Member member = getMember(signature);
 		TestCoverage testCoverage = TestCoverageMapping.getInstance().getOpenedTestCoverage(threadId);
 		if(testCoverage != null){
-			if(((!testCoverage.isManual() && isTestMethod(member)) 
-				|| (testCoverage.isManual() && isManagedBeanMethod(member) && isActionMethod(member)))
-				&& testCoverage.getSignature().equals(signature.toString())){
+			if(((!testCoverage.isManual() && isTestClassMember(member)) ||
+			(testCoverage.isManual() && isManagedBeanMember(member) && isActionMethod(member))) &&
+			testCoverage.getSignature().equals(signature.toString())){
 				TestCoverageMapping.getInstance().finishTestCoverage(threadId);
-				printTestCoverage(testCoverage);
+				Integer testCount = TestCoverageMapping.getInstance().getTestCount();
+				Integer testClassesSize = FileUtil.getTestClassesSizeByResource(member.getDeclaringClass());
+				if(testClassesSize.equals(NOTFOUND) || testClassesSize.equals(testCount)){
+					String fileDirectory = FileUtil.getBuildFolderByResource(member.getDeclaringClass());
+					TestCoverageMapping.getInstance().setFileDirectory(fileDirectory);
+					String testCoverageMappingName = FileUtil.getTestCoverageMappingNameByResource(member.getDeclaringClass());
+					TestCoverageMapping.getInstance().setName(testCoverageMappingName);  
+					TestCoverageMapping.getInstance().save(); //TODO: Após executar todos os testes e os depois os testes selecionados verificar se ambos não serão acumulados no mesmo TestCoverageMapping, se sim, desenvolver uma função clear para o TestCoverageMapping.  
+					printTestCoverage(testCoverage);
+				}
 			}
 		}
 	}
@@ -167,7 +192,7 @@ public aspect TestTracker {
 //		}
 //	}
 //	
-//	after() : afterOthers() {
+//	after() : beforeExecutions() {
 //		Long threadId = Thread.currentThread().getId();
 //		Signature signature = thisJoinPoint.getSignature();
 //		Member member = getMember(signature);
@@ -202,10 +227,11 @@ public aspect TestTracker {
 		LinkedHashSet<Input> inputs = new LinkedHashSet<Input>();
 		if(types.length == args.length){
 			for(int i=0;i<args.length;i++)
-				inputs.add(new Input(types[i],name+i,args[i]));
+				inputs.add(new Input(types[i].getName(),name+i,args[i]));
 		}
 		return inputs;
 	}
+	
 	/**
 	 * @param member
 	 * @return
@@ -221,10 +247,6 @@ public aspect TestTracker {
 
 	private void printTestCoverage(TestCoverage testCoverage) {
 		System.out.println("TestCoverage "+testCoverage.getIdTest()+": "+testCoverage.getSignature());
-		System.out.println("Inputs:");
-		for (Input input : testCoverage.getInputs()) {
-			System.out.println("\t"+input.getType().getName() + " " + input.getName() + " = " + input.getValue());
-		}
 		System.out.println("MethodDatas:");
 		for (CoveredMethod coveredMethod : testCoverage.getCoveredMethods()) {
 			System.out.print("\t"+coveredMethod.getMethodData().getSignature());
@@ -247,7 +269,7 @@ public aspect TestTracker {
 		return null;
 	}
 	
-	private boolean isManagedBeanMethod(Member member) {
+	private boolean isManagedBeanMember(Member member) {
 		Annotation anotations[] = member.getDeclaringClass().getAnnotations();
 		boolean managedBean = false;
 		for(Annotation annotation : anotations){
@@ -278,6 +300,17 @@ public aspect TestTracker {
 		return Modifier.isPublic(member.getModifiers()) && member.getName().startsWith("set");
 	}
 	
+	private boolean isTestClassMember(Member member) {
+		for(Method method : member.getDeclaringClass().getDeclaredMethods()) {
+			for(Annotation annotation : method.getAnnotations()) {
+				String packageClass = annotation.annotationType().getName();
+				if(packageClass.equals("org.junit.Test"))
+					return true;
+			}
+		}
+		return false;
+	}
+	
 	private boolean isTestMethod(Member member) {
 		if(member instanceof Method)
 			return ((Method) member).getAnnotation(Test.class) != null;
@@ -285,7 +318,7 @@ public aspect TestTracker {
 	}
 
 	private boolean canCreateNewTestCoverage(TestCoverage testCoverage, Member member, int argsLength){
-		return (testCoverage == null) && (isTestMethod(member) || (isManagedBeanMethod(member) && (isActionMethod(member) || (isPublicSetMethod(member) && argsLength == 1))));
+		return (testCoverage == null) && (isTestClassMember(member) || (isManagedBeanMember(member) && (isActionMethod(member) || (isPublicSetMethod(member) && argsLength == 1))));
 	}
 	
 }

@@ -1,114 +1,55 @@
 package br.ufrn.dimap.taskanalyzer.regressiontest;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
-import org.tmatesoft.svn.core.SVNException;
-
-import br.ufrn.dimap.taskanalyzer.history.HistoryMiner;
-import br.ufrn.dimap.taskanalyzer.history.SVNConfig;
-import br.ufrn.dimap.testtracker.data.CoveredMethod;
+import br.ufrn.dimap.testtracker.data.Revision;
 import br.ufrn.dimap.testtracker.data.TestCoverage;
 import br.ufrn.dimap.testtracker.data.TestCoverageMapping;
 
 public class DiffRegressionTest extends RegressionTestTechnique {
-	private SVNConfig sVNConfig;
-
-	public DiffRegressionTest(TestCoverageMapping testCoverageMapping) {
-		setTestCoverageMapping(testCoverageMapping);
+	protected TestCoverageMapping testCoverageMapping;
+	protected TestCoverageMapping oldTestCoverageMapping;
+	
+	public DiffRegressionTest() {
 	}
 	
-	private TestCoverageMapping getOldTestCoverageMapping(long currentRevision) {
-		return null; //TODO: recuperar arquivo de teste da revisão atual ou de alguma anterior, nunca uma futura. Deve retornar null caso não haja.
-	}
-
-	public Set<TestCoverage> getTestsCoverages(Integer currentRevision) {
-		Set<TestCoverage> testsCoverages = new HashSet<TestCoverage>(1);
-		try {
-			TestCoverageMapping oldTestCoverageMapping = getOldTestCoverageMapping(currentRevision);
-			if(testCoverageMapping != null){
-				Integer oldRevision = new Integer(oldTestCoverageMapping.getCurrentRevision() == currentRevision ? oldTestCoverageMapping.getOldRevision() : oldTestCoverageMapping.getCurrentRevision());
-				Set<String> modifiedMethods = HistoryMiner.minerModifications(sVNConfig,oldRevision,currentRevision);
-				testsCoverages = selectTestsByModifiedMethods(modifiedMethods);
-			}
-			else{
-				executeAllTests(currentRevision);
-				testsCoverages = TestCoverageMapping.getInstance().getTestsCoverage();
-			}
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (SVNException e) {
-			e.printStackTrace();
-		}
-		return testsCoverages;
-	}
-				
-	public TestCoverageMapping executeTests(Set<String> modifiedMethods, Integer currentRevision) {
-		Set<TestCoverage> testsCoverages = testCoverageMapping.getTestsCoverageByChangedMethodsSignatures(modifiedMethods);
-		Set<String> testClassSignatures = new HashSet<String>(testsCoverages.size());
-		for (TestCoverage testCoverage : testsCoverages) {
-			if(!testCoverage.isManual()){
-				Iterator<CoveredMethod> iterator = testCoverage.getCoveredMethods().iterator();
-				if(iterator.hasNext()){
-					String testClassSignature = iterator.next().getMethodData().getSignature();
-					int returnType = testClassSignature.indexOf(" ");
-					int classDot = testClassSignature.substring(0, testClassSignature.indexOf("(")).lastIndexOf(".");
-					testClassSignatures.add(testClassSignature.substring(returnType == -1 ? 0 : returnType, classDot));
-					break;
-				}
-			}
-		}
-		TestFactory.getInstance().setTestName(getClass().getName());
-		TestFactory.getInstance().setTestClassSignatures(testClassSignatures);
-		TestFactory.getInstance().updateAllTests();
-		TestFactory.getInstance().runTests();
-		
-		TestCoverageMapping.getInstance().setCurrentRevision(currentRevision);
-		return TestCoverageMapping.getInstance();
-	}
-	
-	private void executeAllTests(Integer currentRevision){
-		try {
-			HistoryMiner.checkoutProject(sVNConfig,currentRevision);
-		} catch (SVNException e) {
-			e.printStackTrace();
-		}
-		//TODO: Baixar a versão da respectiva revisão
-		//TODO: Executar todos os testes salvando o mapping no local de destino específico
-		TestCoverageMapping.getInstance().setCurrentRevision(currentRevision);
-	}
-
 	@Override
+	public Set<TestCoverage> executeRegression() {
+		if(modifiedMethods != null)
+			return oldTestCoverageMapping.getTestsCoverageByChangedMethodsSignatures(modifiedMethods);
+		return new HashSet<TestCoverage>(0);
+	}
+	
+	@Override
+	public void setConfiguration(Object configuration[]) throws Exception {
+		if(configuration.length != 1)
+			throw new Exception("Número de parâmetros diferente de 1");
+		if(configuration[0] instanceof TestCoverageMapping)
+			oldTestCoverageMapping = (TestCoverageMapping) configuration[0];
+	}
+	
+	@Override
+	public void setRevision(Revision revision) {
+		try{
+			if(revision.getId() == 1)
+				throw new Exception("Não é possível aplicar uma técnica de regressão se não houver ao menos uma revisão anterior deste projeto");
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		this.revision = revision;
+	}
+
 	public TestCoverageMapping getTestCoverageMapping() {
-		// TODO Auto-generated method stub
-		return null;
+		return testCoverageMapping;
 	}
-
-	@Override
-	public void setTestCoverageMapping(TestCoverageMapping testCoverageMapping) {
-		// TODO Auto-generated method stub
-
+	
+	public TestCoverageMapping getOldTestCoverageMapping() {
+		return oldTestCoverageMapping;
 	}
-
-	public SVNConfig getsVNConfig() {
-		return sVNConfig;
-	}
-
-	public void setsVNConfig(SVNConfig sVNConfig) {
-		this.sVNConfig = sVNConfig;
-	}
-
-	@Override
-	public Set<TestCoverage> selectTestsByModifiedMethods(Set<String> modifiedMethods) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public TestCoverageMapping executeTests(Set<String> modifiedMethods) {
-		// TODO Auto-generated method stub
-		return null;
+	
+	public void setOldTestCoverageMapping(TestCoverageMapping oldTestCoverageMapping) {
+		this.oldTestCoverageMapping = oldTestCoverageMapping;
 	}
 
 }

@@ -3,8 +3,6 @@ package br.ufrn.dimap.taskanalyzer.history;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.ufrn.ppgsc.scenario.analyzer.backhoe.UpdatedLine;
-
 public class ClassUpdates {
 	private String classPath;
 	private String classSourceCode1;

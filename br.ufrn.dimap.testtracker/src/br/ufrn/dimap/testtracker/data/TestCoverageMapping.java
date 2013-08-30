@@ -3,14 +3,20 @@
  */
 package br.ufrn.dimap.testtracker.data;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import br.ufrn.dimap.testtracker.util.FileUtil;
 
 /**
  * @author João Guedes
@@ -21,14 +27,26 @@ public class TestCoverageMapping implements Serializable {
 	
 	private static TestCoverageMapping instance = new TestCoverageMapping();
 	
-	private Integer currentRevision = 0;
-	private Integer oldRevision = 0;
-	private Map<String, MethodData> methodPool = new HashMap<String, MethodData>();
-	private Map<Long,TestCoverage> testCoverageBuilding = new HashMap<Long,TestCoverage>();
-	private SortedSet<TestCoverage> testCoverage = new TreeSet<TestCoverage>();
-	private Integer nextId = 1;
+	private String name;
+	private Revision currentRevision;
+	private Revision oldRevision;
+	private Map<String, MethodData> methodPool;
+	private Map<Long,TestCoverage> testCoverageBuilding;
+	private SortedSet<TestCoverage> testCoverages;
+	private Integer nextId;
+	private String fileDirectory;
+	private Integer testCount;
 	
 	private TestCoverageMapping() {
+		this.name = "TestCoverageMapping";
+		this.currentRevision = new Revision();
+		this.oldRevision = new Revision();
+		this.methodPool = new HashMap<String, MethodData>();
+		this.testCoverageBuilding = new HashMap<Long,TestCoverage>();
+		this.testCoverages = new TreeSet<TestCoverage>();
+		this.nextId = 1;
+		this.fileDirectory = "C:/";
+		this.testCount = 0;
 	}
 
 	/**
@@ -49,12 +67,19 @@ public class TestCoverageMapping implements Serializable {
 	 * @return
 	 */
 	public Set<TestCoverage> getTestsCoverageByChangedMethodsSignatures(Set<String> changedMethodsSignatures){
-		Set<TestCoverage> testsCoverage = new HashSet<TestCoverage>(1);
+		Set<TestCoverage> testsCoverage = new HashSet<TestCoverage>(0);
 		for (String changedMethodSignature : changedMethodsSignatures) {
 			if(methodPool.containsKey(changedMethodSignature))
 				testsCoverage.addAll(methodPool.get(changedMethodSignature).getTestsCoverage());
 		}
 		return testsCoverage;
+	}
+	
+	public Set<String> getTestsFullyQuilifiedNames() {
+		Set<String> fullyQuilifiedNames = new HashSet<String>(testCoverages.size());
+		for(TestCoverage testCoverage : testCoverages)
+			fullyQuilifiedNames.add(testCoverage.getClassFullName());
+		return fullyQuilifiedNames;
 	}
 	
 	/**
@@ -90,38 +115,96 @@ public class TestCoverageMapping implements Serializable {
 	}
 	
 	public void finishTestCoverage(Long threadId){
-		testCoverage.add(removeOpenedTestCoverage(threadId));
+		testCoverages.add(removeOpenedTestCoverage(threadId));
+		testCount++;
+	}
+	
+	public void save(){
+		FileUtil.saveObjectToFile(getInstance(), fileDirectory, name, ".tcm");
+	}
+	
+	public void combineWith(TestCoverageMapping other) throws Exception { //TODO: Traduzir as mensagens das exceções para o inglês
+		//TODO: Criar uma nova Exception específica para estas situações
+		//TODO: lembrar-se do setFileDirectory para a pasta lib na raiz do projeto 
+		if(!currentRevision.equals(other.getCurrentRevision()))
+			throw new Exception("A currentRevision deveria ser igual em todos os testCoverageMappings");
+		if(!oldRevision.equals(other.getOldRevision()))
+			throw new Exception("A oldRevision deveria ser igual em todos os testCoverageMappings");
+		for (String signature : other.getMethodPool().keySet()) {
+			if(methodPool.containsKey(signature))
+				methodPool.get(signature).combineWith(other.getMethodPool().get(signature));
+			else
+				methodPool.put(signature,other.getMethodPool().get(signature));
+		}
+		if(!this.testCoverageBuilding.isEmpty())
+			throw new Exception("A lista testCoverageBuilding deveria estar vazia!");
+		Integer testCoverageSize = testCoverages.size();
+		for(TestCoverage otherTestCoverage : other.getTestCoverages()) {
+			if(!testCoverages.contains(otherTestCoverage)) {
+				otherTestCoverage.setIdTest(otherTestCoverage.getIdTest()+testCoverageSize);
+				testCoverages.add(otherTestCoverage);
+			}
+		}
+		nextId += other.seeNextId()-1;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public Map<Long,TestCoverage> getTestsCoverageBuilding() {
 		return testCoverageBuilding;
 	}
 	
-	public Set<TestCoverage> getTestsCoverage() {
-		return testCoverage;
+	public Set<TestCoverage> getTestCoverages() {
+		return testCoverages;
 	}
 
 	public Integer getNextId() {
 		return nextId++;
 	}
 
+	public Integer seeNextId() {
+		return nextId;
+	}
+
 	public static TestCoverageMapping getInstance(){
 		return instance;
 	}
 
-	public Integer getCurrentRevision() {
+	public Map<String, MethodData> getMethodPool() {
+		return methodPool;
+	}
+
+	public Revision getCurrentRevision() {
 		return currentRevision;
 	}
 
-	public void setCurrentRevision(Integer currentRevision) {
-		if(currentRevision > this.currentRevision){
+	public void setCurrentRevision(Revision currentRevision) {
+		if(currentRevision.getId() > this.currentRevision.getId()){
 			this.oldRevision = this.currentRevision;
 			this.currentRevision = currentRevision;
 		}
 	}
 
-	public Integer getOldRevision() {
+	public Revision getOldRevision() {
 		return oldRevision;
+	}
+
+	public String getFileDirectory() {
+		return fileDirectory;
+	}
+
+	public void setFileDirectory(String fileDirectory) {
+		this.fileDirectory = fileDirectory;
+	}
+
+	public Integer getTestCount() {
+		return testCount;
 	}
 
 }

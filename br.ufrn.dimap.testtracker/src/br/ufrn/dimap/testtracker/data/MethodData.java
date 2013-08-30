@@ -22,13 +22,21 @@ public class MethodData implements Serializable {
 		this.signature = signature;
 		testsCoverage = new TreeSet<TestCoverage>();
 	}
-
+	
 	public String getSignature() {
 		return signature;
 	}
 
 	public Set<TestCoverage> getTestsCoverage() {
 		return testsCoverage;
+	}
+	
+	public void combineWith(MethodData other) throws Exception {  //TODO: Traduzir as mensagens das exceções para o inglês
+		//TODO: Criar uma exception própria para esta situação
+		if(!signature.equals(other.getSignature()))
+			throw new Exception("As signatures dos MethodDatas não são iguais!");
+		for(TestCoverage otherTestCoverage : other.getTestsCoverage())
+			testsCoverage.add(otherTestCoverage);
 	}
 	
 	@Override

@@ -35,6 +35,8 @@ import org.tmatesoft.svn.core.wc.ISVNOptions;
 import org.tmatesoft.svn.core.wc.SVNDiffOptions;
 import org.tmatesoft.svn.util.SVNLogType;
 
+import br.ufrn.dimap.testtracker.util.FileUtil;
+
 import de.regnis.q.sequence.line.diff.QDiffGeneratorFactory;
 import de.regnis.q.sequence.line.diff.QDiffManager;
 
@@ -375,6 +377,8 @@ public class TestTrackerSVNDiffGenerator implements ISVNDiffGenerator {
     public void displayFileDiff(String path, File file1, File file2,
             String rev1, String rev2, String mimeType1, String mimeType2, OutputStream result) throws SVNException {
         path = getDisplayPath(path);
+        if(!path.endsWith(".java"))
+        	return;
         // if anchor1 is the same as anchor2 just use path.        
         // if anchor1 differs from anchor2 =>
         // condence anchors (get common root and remainings).
@@ -409,7 +413,7 @@ public class TestTrackerSVNDiffGenerator implements ISVNDiffGenerator {
         String label2 = getLabel(p2, rev2);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
-        	displayHeader(bos, path, file1, file2);
+        	displayHeader(bos, path, file1, file2, rev1, rev2);
             if (file2 == null && !isDiffDeleted()) {
                 bos.close();
                 bos.writeTo(result);
@@ -808,15 +812,18 @@ public class TestTrackerSVNDiffGenerator implements ISVNDiffGenerator {
 		return content.toString();
 	}
     
-    protected void displayHeader(OutputStream os, String path, File file1, File file2) throws IOException {
-    	os.write("    <br.ufrn.taskanalyser.framework.miner.ClassUpdates>".getBytes(getEncoding()));
+    protected void displayHeader(OutputStream os, String path, File file1, File file2, String rev1, String rev2) throws IOException {
+    	os.write("    <br.ufrn.dimap.taskanalyzer.history.ClassUpdates>".getBytes(getEncoding()));
     	os.write(getEOL());
     	os.write(("      <classPath>"+path+"</classPath>").getBytes(getEncoding()));
     	os.write(getEOL());
-    	String contentFile1 = "      <classSourceCode1>"+readFile(file1)+"</classSourceCode1>";
-    	os.write(contentFile1.getBytes(Charset.forName(getEncoding())));
+    	String fileDirectory = (new File("")).getAbsolutePath()+"\\temp\\"; //TODO: Encontrar o arquivo dentro do projeto, pois o checkout já foi feito
+    	//TODO: Encontar uma forma de buscar todos os diffs no próprio projeto já feito checkout, ou fazer o diff antes do checkout, caso não haja diff o checkout pode baixar apenas os arquivos que sofreram modificação, evitando baixar arquivos com redundância
+    	FileUtil.saveTextToFile(readFile(file1), fileDirectory+(rev1.substring(1, rev1.length()-1)), file2.getName(), "");
+    	os.write(("      <classSourceCode1>"+fileDirectory+(rev1.substring(1, rev1.length()-1))+"\\"+file2.getName()+"</classSourceCode1>").getBytes(getEncoding()));
     	os.write(getEOL());
-    	os.write(("      <classSourceCode2>"+readFile(file2)+"</classSourceCode2>").getBytes(getEncoding()));
+    	FileUtil.saveTextToFile(readFile(file2), fileDirectory+(rev2.substring(1, rev2.length()-1)), "_"+file2.getName(), "");
+    	os.write(("      <classSourceCode2>"+fileDirectory+(rev2.substring(1, rev2.length()-1))+"\\"+"_"+file2.getName()+"</classSourceCode2>").getBytes(getEncoding()));
     	os.write(getEOL());
     	os.write("      <changedLines>".getBytes(getEncoding()));
     	os.write(getEOL());

@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -17,11 +16,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -47,8 +48,9 @@ import org.tmatesoft.svn.core.wc.SVNUpdateClient;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
 import br.ufrn.dimap.taskanalyzer.plugin.Activator;
-import br.ufrn.dimap.taskanalyzer.plugin.actions.SysOutProgressMonitor;
-import br.ufrn.ppgsc.scenario.analyzer.backhoe.UpdatedMethod;
+import br.ufrn.dimap.taskanalyzer.plugin.SysOutProgressMonitor;
+import br.ufrn.dimap.testtracker.data.Revision;
+import br.ufrn.dimap.testtracker.util.FileUtil;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -73,14 +75,8 @@ public class History {
 		repository.setAuthenticationManager(authManager);
 	}
 	
-    public Set<String> getChangedMethodsSignatures(Integer startRevision, Integer endRevision) {
-    	Collection<UpdatedMethod> updatedMethods = getChangedMethods(startRevision,endRevision);
-//    	for (UpdatedMethod updatedMethod : updatedMethods) {
-//    		System.out.println(updatedMethod.getMethodLimit().getSignature()+" (Revision: "+updatedMethod.getUpdatedLines().get(0).getRevision()+")");
-//    		for(UpdatedLine updatedLine : updatedMethod.getUpdatedLines()){
-//    			System.out.println("\t"+(updatedLine.getLineNumber()<0 ? "" : "+")+updatedLine.getLineNumber());
-//    		}
-//		}
+    public Set<String> getChangedMethodsSignatures(Revision startRevision) {
+    	Collection<UpdatedMethod> updatedMethods = getChangedMethods(startRevision.getOldRevision(),startRevision);
     	Set<String> changedMethodsSignatures = new HashSet<String>(); 
     	for (UpdatedMethod m : updatedMethods) {
 			changedMethodsSignatures.add(m.getMethodLimit().getSignature());
@@ -88,27 +84,39 @@ public class History {
         return changedMethodsSignatures;
     }
     
-    public IProject checkoutProject(long revision) throws SVNException, CoreException, IOException {
+    public void checkoutProject(Revision revision) throws SVNException, CoreException, IOException {
     	SVNClientManager client = SVNClientManager.newInstance();
 		client.setAuthenticationManager(repository.getAuthenticationManager());
 		SVNUpdateClient sVNUpdateClient = client.getUpdateClient();
-		String tempDir = iWorkspace.getRoot().getLocation().toString()+sVNConfig.getProjectPath()+"_"+revision;
+		String tempDir = iWorkspace.getRoot().getLocation().toString()+sVNConfig.getProjectPath()+"_"+revision.getId();
 		File file = new File(tempDir);
 		if(!file.exists()){
 			file.mkdir();
 			sVNUpdateClient.doCheckout(SVNURL.parseURIEncoded(sVNConfig.getSvnUrl()+sVNConfig.getProjectPath()),
-					file, SVNRevision.create(revision-1), SVNRevision.create(revision), SVNDepth.INFINITY, true);
+					file, SVNRevision.create(revision.getId()-1), SVNRevision.create(revision.getId()), SVNDepth.INFINITY, true);
 		}
-		IProject iProject = iWorkspace.getRoot().getProject(sVNConfig.getProjectPath()+"_"+revision);
+		IProject iProject = iWorkspace.getRoot().getProject(sVNConfig.getProjectPath()+"_"+revision.getId());
 		importProject(iProject);
 		configureProject(iProject);
-		return iProject;
+		buildingProject(iProject);
     }
+
+	private void buildingProject(IProject iProject) throws CoreException {
+		SysOutProgressMonitor.out.println("Building eclipse project: " + iProject.getName());
+		iProject.build(IncrementalProjectBuilder.FULL_BUILD, new SysOutProgressMonitor());
+		IMarker[] problems = iProject.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+		for(IMarker iMarker : problems){
+			if(iMarker.getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO) == IMarker.SEVERITY_ERROR)
+				System.out.println(iMarker.getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO));
+		}
+		SysOutProgressMonitor.out.println("Eclipse project builded");
+	}
     
     private void importProject(final IProject iProject) throws CoreException, IOException {
     	SysOutProgressMonitor.out.println("Importing eclipse project: " + iProject.getName());
     	InputStream inputStream = new FileInputStream(iWorkspace.getRoot().getLocation().toString()+"/"+iProject.getName()+"/.project");
     	final IProjectDescription iProjectDescription = iWorkspace.loadProjectDescription(inputStream);
+    	
     	
     	iWorkspace.run(new IWorkspaceRunnable() {
     		@Override
@@ -126,19 +134,10 @@ public class History {
     	
     	copyFile(iProject, "/lib/aspectjweaver.jar");
     	copyFile(iProject, "/lib/testtracker.jar");
+    	iProject.refreshLocal(IResource.DEPTH_INFINITE, new SysOutProgressMonitor());
     	
     	SysOutProgressMonitor.out.println("Eclipse project imported");
-
     }
-
-	/**
-	 * @throws IOException
-	 */
-	private String findResolveURL(String relativePath) throws IOException {
-		URL url = FileLocator.find(Activator.getDefault().getBundle(), new Path(relativePath), null);
-    	url = FileLocator.resolve(url);
-    	return url.getPath();
-	}
     
     private void configureProject(IProject iProject) throws CoreException, IOException {
     	SysOutProgressMonitor.out.println("Adding AspectJ nature");
@@ -186,8 +185,18 @@ public class History {
 //			classpathEntriesList.add(aspectjweaverJar);
 //		}
 		iJavaProject.setRawClasspath(classpathEntriesList.toArray(new IClasspathEntry[classpathEntriesList.size()]), new SysOutProgressMonitor());
+		iJavaProject.save(new SysOutProgressMonitor(), true);
 		SysOutProgressMonitor.out.println("Classpath configured");
     }
+
+	/**
+	 * @throws IOException
+	 */
+	private String findResolveURL(String relativePath) throws IOException {
+		URL url = FileLocator.find(Activator.getDefault().getBundle(), new Path(relativePath), null);
+    	url = FileLocator.resolve(url);
+    	return url.getPath();
+	}
 
 	/**
 	 * @param attribute
@@ -268,7 +277,7 @@ public class History {
     	return file;
     }
 
-	private Collection<UpdatedMethod> getChangedMethods(Integer startRevision, Integer endRevision) {
+	private Collection<UpdatedMethod> getChangedMethods(Revision startRevision, Revision endRevision) {
 		Collection<UpdatedMethod> updatedMethods = new ArrayList<UpdatedMethod>();
 		SVNClientManager client = SVNClientManager.newInstance();
 		client.setAuthenticationManager(repository.getAuthenticationManager());
@@ -280,9 +289,9 @@ public class History {
 			FileOutputStream fOS = new FileOutputStream(xmlFile);
 			startProjectUpdatesXML(testTrackerSVNDiffGenerator, fOS);
 			diffClient.doDiff(SVNURL.parseURIEncoded(sVNConfig.getSvnUrl()+sVNConfig.getProjectPath()),
-					SVNRevision.create(startRevision),
+					SVNRevision.create(startRevision.getId()),
 					SVNURL.parseURIEncoded(sVNConfig.getSvnUrl()+sVNConfig.getProjectPath()),
-			        SVNRevision.create(endRevision),
+			        SVNRevision.create(endRevision.getId()),
 			        SVNDepth.INFINITY,
 			        true,
 			        fOS);
@@ -307,12 +316,15 @@ public class History {
 	 * @throws IOException
 	 * @throws UnsupportedEncodingException
 	 */
-	private void finishProjectUpdatesXML(TestTrackerSVNDiffGenerator testTrackerSVNDiffGenerator,
+	private void startProjectUpdatesXML(TestTrackerSVNDiffGenerator testTrackerSVNDiffGenerator,
 			FileOutputStream fOS) throws IOException,
 			UnsupportedEncodingException {
-		fOS.write("  </classUpdates>".getBytes(testTrackerSVNDiffGenerator.getEncoding()));
+		fOS.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>".getBytes(testTrackerSVNDiffGenerator.getEncoding()));
 		fOS.write(testTrackerSVNDiffGenerator.getEOL());
-		fOS.write("</br.ufrn.taskanalyser.framework.miner.ProjectUpdates>".getBytes(testTrackerSVNDiffGenerator.getEncoding()));
+		fOS.write("<br.ufrn.dimap.taskanalyzer.history.ProjectUpdates>".getBytes(testTrackerSVNDiffGenerator.getEncoding()));
+		fOS.write(testTrackerSVNDiffGenerator.getEOL());
+		fOS.write("  <classUpdates>".getBytes(testTrackerSVNDiffGenerator.getEncoding()));
+		fOS.write(testTrackerSVNDiffGenerator.getEOL());
 	}
 
 	/**
@@ -321,31 +333,21 @@ public class History {
 	 * @throws IOException
 	 * @throws UnsupportedEncodingException
 	 */
-	private void startProjectUpdatesXML(TestTrackerSVNDiffGenerator testTrackerSVNDiffGenerator,
+	private void finishProjectUpdatesXML(TestTrackerSVNDiffGenerator testTrackerSVNDiffGenerator,
 			FileOutputStream fOS) throws IOException,
 			UnsupportedEncodingException {
-		fOS.write("<br.ufrn.taskanalyser.framework.miner.ProjectUpdates>".getBytes(testTrackerSVNDiffGenerator.getEncoding()));
+		fOS.write("      </changedLines>".getBytes(testTrackerSVNDiffGenerator.getEncoding()));
 		fOS.write(testTrackerSVNDiffGenerator.getEOL());
-		fOS.write("  <classUpdates>".getBytes(testTrackerSVNDiffGenerator.getEncoding()));
+		fOS.write("    </br.ufrn.dimap.taskanalyzer.history.ClassUpdates>".getBytes(testTrackerSVNDiffGenerator.getEncoding()));
 		fOS.write(testTrackerSVNDiffGenerator.getEOL());
-	}
-	
-	private String readFile(File file){
-		String content = null;
-		try {
-			FileReader reader = new FileReader(file);
-			char[] chars = new char[(int) file.length()];
-			reader.read(chars);
-			content = new String(chars);
-			reader.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return content;
+		fOS.write("  </classUpdates>".getBytes(testTrackerSVNDiffGenerator.getEncoding()));
+		fOS.write(testTrackerSVNDiffGenerator.getEOL());
+		fOS.write("</br.ufrn.dimap.taskanalyzer.history.ProjectUpdates>".getBytes(testTrackerSVNDiffGenerator.getEncoding()));
 	}
 	
 	private Object getObjectFromXML(File xmlFile){
-		String xml = readFile(xmlFile);
+		xmlFile.getAbsolutePath();
+		String xml = FileUtil.loadTextFromFile(xmlFile);
 		XStream xstream = new XStream();
 		Object object = (Object) xstream.fromXML(xml);
 		return object;

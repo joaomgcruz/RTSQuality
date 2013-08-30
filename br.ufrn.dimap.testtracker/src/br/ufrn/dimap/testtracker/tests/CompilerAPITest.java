@@ -1,4 +1,4 @@
-package br.ufrn.dimap.taskanalyzer.regressiontest;
+package br.ufrn.dimap.testtracker.tests;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -45,7 +45,7 @@ public class CompilerAPITest {
  
         /*Prepare any compilation options to be used during compilation*/
         //In this example, we are asking the compiler to place the output files under bin folder.
-        String[] compileOptions = new String[]{"-d", "WebContent/WEB-INF/classes"} ;
+        String[] compileOptions = new String[]{"-d", "D:/UFRN/Scenario-analyzer/runtime-workspace/Calculadora_132/WebContent/WEB-INF/classes", "-classpath", "D:/UFRN/Scenario-analyzer/runtime-workspace/Calculadora_132/WebContent/WEB-INF/classes;D:/UFRN/Scenario-analyzer/runtime-workspace/Calculadora_132/WebContent/WEB-INF/lib/junit.jar;D:/UFRN/Scenario-analyzer/eclipse-new/plugins/org.hamcrest.core_1.1.0.v20090501071000.jar"}; //TODO: Tornar isso dinâmico
         Iterable<String> compilationOptionss = Arrays.asList(compileOptions);
  
         /*Create a diagnostic controller, which holds the compilation problems*/

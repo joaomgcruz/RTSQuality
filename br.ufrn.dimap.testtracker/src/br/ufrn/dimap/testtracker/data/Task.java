@@ -1,4 +1,4 @@
-package br.ufrn.dimap.taskanalyzer.ui;
+package br.ufrn.dimap.testtracker.data;
 
 import java.util.List;
 
@@ -6,6 +6,10 @@ public class Task {
 	private Integer id;
 	private List<Revision> revisions;
 	private String type;
+	
+	public static final String REFACTOR = "REFACTOR";
+	public static final String CORRECTION = "CORRECTION";
+	public static final String DEVELOPMENT = "DEVELOPMENT";
 	
 	public Task(Integer id, List<Revision> revisions, String type) {
 		this.id = id;

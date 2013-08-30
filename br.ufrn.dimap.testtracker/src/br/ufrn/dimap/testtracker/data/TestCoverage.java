@@ -4,6 +4,7 @@
 package br.ufrn.dimap.testtracker.data;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -21,14 +22,15 @@ public class TestCoverage implements Comparable<TestCoverage>, Serializable {
 	
 	private Integer idTest;
 	private String signature;
-	private Set<Input> inputs;
+	private String classFullName;
 	private boolean manual;
 	private LinkedHashSet<CoveredMethod> coveredMethods;
 	private Date date;
 	
 	public TestCoverage() {
 		this.idTest = TestCoverageMapping.getInstance().getNextId();
-		this.signature = "";
+		this.signature = new String();
+		this.classFullName = new String();
 		this.manual = false;
 		this.coveredMethods = new LinkedHashSet<CoveredMethod>();
 		this.date = new Date();
@@ -37,9 +39,9 @@ public class TestCoverage implements Comparable<TestCoverage>, Serializable {
 	public Integer getIdTest() {
 		return idTest;
 	}
-
-	public Set<Input> getInputs() {
-		return inputs;
+	
+	public void setIdTest(Integer idTest) {
+		this.idTest = idTest;
 	}
 
 	public String getSignature() {
@@ -48,6 +50,14 @@ public class TestCoverage implements Comparable<TestCoverage>, Serializable {
 
 	public void setSignature(String signature) {
 		this.signature = signature;
+	}
+	
+	public String getClassFullName() {
+		return classFullName;
+	}
+
+	public void setClassFullName(String classFullName) {
+		this.classFullName = classFullName;
 	}
 
 	public boolean isManual() {
@@ -88,7 +98,6 @@ public class TestCoverage implements Comparable<TestCoverage>, Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((coveredMethods == null) ? 0 : coveredMethods.hashCode());
-		result = prime * result + ((inputs == null) ? 0 : inputs.hashCode());
 		result = prime * result + ((signature == null) ? 0 : signature.hashCode());
 		return result;
 	}
@@ -107,17 +116,25 @@ public class TestCoverage implements Comparable<TestCoverage>, Serializable {
 				return false;
 		} else if (!coveredMethods.equals(other.coveredMethods))
 			return false;
-		if (inputs == null) {
-			if (other.inputs != null)
-				return false;
-		} else if (!inputs.equals(other.inputs))
-			return false;
 		if (signature == null) {
 			if (other.signature != null)
 				return false;
 		} else if (!signature.equals(other.signature))
 			return false;
 		return true;
+	}
+	
+	public String toString() {
+		StringBuffer stringBuffer = new StringBuffer();
+		stringBuffer.append("Id: "+idTest+"\n");
+		stringBuffer.append("Signature: "+signature+"\n");
+		stringBuffer.append("Class Full Name: "+classFullName+"\n");
+		stringBuffer.append("Type: "+(manual ? "Manual\n" : "Automático\n"));
+		stringBuffer.append("Covered Methods:\n");
+		for(CoveredMethod coveredMethod : coveredMethods)
+			stringBuffer.append("\t"+coveredMethod.toString());
+		stringBuffer.append("Date: "+date.toString()+"\n");
+		return stringBuffer.toString();
 	}
 
 }

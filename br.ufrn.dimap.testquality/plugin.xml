@@ -16,9 +16,9 @@
             </separator>
          </menu>
          <action
-               class="br.ufrn.dimap.taskanalyzer.plugin.actions.SampleAction"
+               class="br.ufrn.dimap.taskanalyzer.plugin.SampleAction"
                icon="icons/sample.gif"
-               id="br.ufrn.dimap.taskanalyzer.plugin.actions.SampleAction"
+               id="br.ufrn.dimap.taskanalyzer.plugin.SampleAction"
                label="Start Analysis"
                menubarPath="sampleMenu/sampleGroup"
                toolbarPath="sampleGroup"
