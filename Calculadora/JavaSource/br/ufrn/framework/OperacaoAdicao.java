@@ -6,6 +6,11 @@ public class OperacaoAdicao extends Operacao {
 	public Float resultado() {
 		return getTermoUm() + getTermoDois();
 	}
+
+	public Float resultado2() {
+		voidMethod();
+		return new Float(1000000000);
+	}
 	
 	public String toString(){
 		return teste;

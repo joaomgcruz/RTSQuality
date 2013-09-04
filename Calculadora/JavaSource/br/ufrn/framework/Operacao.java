@@ -23,4 +23,7 @@ public abstract class Operacao {
 
 	public abstract Float resultado();
 	
+	public void voidMethod() {
+	}
+	
 }
