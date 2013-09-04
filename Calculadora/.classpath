@@ -20,12 +20,6 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
-	<classpathentry kind="src" path="/br.ufrn.dimap.testtracker">
-		<attributes>
-			<attribute name="org.eclipse.ajdt.inpath" value="org.eclipse.ajdt.inpath"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="D:/UFRN/Scenario-analyzer/workspace/br.ufrn.dimap.taskanalyzer/lib/aspectjweaver.jar"/>
 	<classpathentry kind="output" path="WebContent/WEB-INF/classes"/>
 </classpath>
