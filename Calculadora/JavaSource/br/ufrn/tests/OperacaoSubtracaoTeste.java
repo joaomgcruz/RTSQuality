@@ -9,7 +9,6 @@ import br.ufrn.framework.OperacaoSubtracao;
 public class OperacaoSubtracaoTeste {
 	
 	public OperacaoSubtracaoTeste() {
-		
 	}
 	
 	@Test

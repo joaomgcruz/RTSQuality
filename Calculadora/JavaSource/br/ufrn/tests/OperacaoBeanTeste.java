@@ -1,9 +1,13 @@
 package br.ufrn.tests;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
+import br.ufrn.framework.Operacao;
+import br.ufrn.framework.OperacaoAdicao;
 import br.ufrn.ui.OperacaoBean;
 
 public class OperacaoBeanTeste {
@@ -48,6 +52,13 @@ public class OperacaoBeanTeste {
 	@Test
 	public void testOperacaoAdicao() {
 		testOperacao(0,adicaoOuts);
+	}
+	
+	@Test
+	public void testResultado2() {
+		Operacao op = new OperacaoAdicao();
+		op.toString();
+		assertEquals(true,true);
 	}
 
 	@Test

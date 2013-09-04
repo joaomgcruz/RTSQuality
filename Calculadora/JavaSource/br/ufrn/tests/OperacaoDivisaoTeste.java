@@ -9,7 +9,6 @@ import br.ufrn.framework.OperacaoDivisao;
 public class OperacaoDivisaoTeste {
 	
 	public OperacaoDivisaoTeste() {
-		
 	}
 	
 	@Test
