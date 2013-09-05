@@ -24,6 +24,7 @@ public abstract class Operacao {
 	public abstract Float resultado();
 	
 	public void voidMethod() {
+		System.out.println("voidReturn");
 	}
 	
 }
