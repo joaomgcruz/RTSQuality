@@ -4,6 +4,7 @@ public class OperacaoAdicao extends Operacao {
 	public String teste = "a";
 
 	public Float resultado() {
+		voidMethod();
 		return getTermoUm() + getTermoDois();
 	}
 
