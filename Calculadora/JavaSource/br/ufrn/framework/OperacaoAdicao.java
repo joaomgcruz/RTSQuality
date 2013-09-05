@@ -9,7 +9,6 @@ public class OperacaoAdicao extends Operacao {
 	}
 
 	public String toString(){
-		voidMethod();
 		return teste;
 	}
 }
