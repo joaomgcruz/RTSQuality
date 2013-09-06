@@ -23,6 +23,7 @@ public class ProjectUpdates {
 			for (UpdatedLine updatedLine : classUpdate.getChangedLines()) {
 				if(updatedLine.getLineNumber()<0){
 					updatedLine.setRevision(rev1.getId());
+					updatedLine.setLineNumber(updatedLine.getLineNumber()*-1);
 					removedLines.add(updatedLine);
 				}
 				else{

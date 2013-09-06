@@ -78,7 +78,7 @@ public class TestCoverageMapping implements Serializable {
 	public Set<String> getTestsFullyQuilifiedNames() {
 		Set<String> fullyQuilifiedNames = new HashSet<String>(testCoverages.size());
 		for(TestCoverage testCoverage : testCoverages)
-			fullyQuilifiedNames.add(testCoverage.getClassFullName());
+			fullyQuilifiedNames.add(testCoverage.getTestData().getClassFullName());
 		return fullyQuilifiedNames;
 	}
 	

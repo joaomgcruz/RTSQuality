@@ -336,10 +336,6 @@ public class History {
 	private void finishProjectUpdatesXML(TestTrackerSVNDiffGenerator testTrackerSVNDiffGenerator,
 			FileOutputStream fOS) throws IOException,
 			UnsupportedEncodingException {
-		fOS.write("      </changedLines>".getBytes(testTrackerSVNDiffGenerator.getEncoding()));
-		fOS.write(testTrackerSVNDiffGenerator.getEOL());
-		fOS.write("    </br.ufrn.dimap.taskanalyzer.history.ClassUpdates>".getBytes(testTrackerSVNDiffGenerator.getEncoding()));
-		fOS.write(testTrackerSVNDiffGenerator.getEOL());
 		fOS.write("  </classUpdates>".getBytes(testTrackerSVNDiffGenerator.getEncoding()));
 		fOS.write(testTrackerSVNDiffGenerator.getEOL());
 		fOS.write("</br.ufrn.dimap.taskanalyzer.history.ProjectUpdates>".getBytes(testTrackerSVNDiffGenerator.getEncoding()));

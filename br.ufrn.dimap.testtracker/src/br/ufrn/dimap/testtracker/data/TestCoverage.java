@@ -20,18 +20,14 @@ import java.util.TreeSet;
 public class TestCoverage implements Comparable<TestCoverage>, Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	private Integer idTest;
-	private String signature;
-	private String classFullName;
-	private boolean manual;
+	private Integer idTest; //TODO: Verificar se os IDs estão coerentes ou se estão sendo repetidos ou gerados de forma desordenada. Se sim descobrir o por quê e corrigir o problema.
+	private TestData testData;
 	private LinkedHashSet<CoveredMethod> coveredMethods;
 	private Date date;
 	
 	public TestCoverage() {
 		this.idTest = TestCoverageMapping.getInstance().getNextId();
-		this.signature = new String();
-		this.classFullName = new String();
-		this.manual = false;
+		this.testData = new TestData();
 		this.coveredMethods = new LinkedHashSet<CoveredMethod>();
 		this.date = new Date();
 	}
@@ -44,28 +40,12 @@ public class TestCoverage implements Comparable<TestCoverage>, Serializable {
 		this.idTest = idTest;
 	}
 
-	public String getSignature() {
-		return signature;
+	public TestData getTestData() {
+		return testData;
 	}
 
-	public void setSignature(String signature) {
-		this.signature = signature;
-	}
-	
-	public String getClassFullName() {
-		return classFullName;
-	}
-
-	public void setClassFullName(String classFullName) {
-		this.classFullName = classFullName;
-	}
-
-	public boolean isManual() {
-		return manual;
-	}
-
-	public void setManual(boolean manual) {
-		this.manual = manual;
+	public void setTestData(TestData testData) {
+		this.testData = testData;
 	}
 
 	public void addCoveredMethod(String methodSignature, LinkedHashSet<Input> inputs) {
@@ -92,13 +72,25 @@ public class TestCoverage implements Comparable<TestCoverage>, Serializable {
 		else
 			return 0;
 	}
+	
+	public String toString() {
+		StringBuffer stringBuffer = new StringBuffer();
+		stringBuffer.append("Id: "+idTest+"\n");
+		stringBuffer.append("Signature: "+testData.getSignature()+"\n");
+		stringBuffer.append("Class Full Name: "+testData.getClassFullName()+"\n");
+		stringBuffer.append("Type: "+(testData.isManual() ? "Manual\n" : "Automático\n"));
+		stringBuffer.append("Covered Methods:\n");
+		for(CoveredMethod coveredMethod : coveredMethods)
+			stringBuffer.append("\t"+coveredMethod.toString());
+		stringBuffer.append("Date: "+date.toString()+"\n");
+		return stringBuffer.toString();
+	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((coveredMethods == null) ? 0 : coveredMethods.hashCode());
-		result = prime * result + ((signature == null) ? 0 : signature.hashCode());
+		result = prime * result + ((testData == null) ? 0 : testData.hashCode());
 		return result;
 	}
 
@@ -111,30 +103,12 @@ public class TestCoverage implements Comparable<TestCoverage>, Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		TestCoverage other = (TestCoverage) obj;
-		if (coveredMethods == null) {
-			if (other.coveredMethods != null)
+		if (testData == null) {
+			if (other.testData != null)
 				return false;
-		} else if (!coveredMethods.equals(other.coveredMethods))
-			return false;
-		if (signature == null) {
-			if (other.signature != null)
-				return false;
-		} else if (!signature.equals(other.signature))
+		} else if (!testData.equals(other.testData))
 			return false;
 		return true;
-	}
-	
-	public String toString() {
-		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append("Id: "+idTest+"\n");
-		stringBuffer.append("Signature: "+signature+"\n");
-		stringBuffer.append("Class Full Name: "+classFullName+"\n");
-		stringBuffer.append("Type: "+(manual ? "Manual\n" : "Automático\n"));
-		stringBuffer.append("Covered Methods:\n");
-		for(CoveredMethod coveredMethod : coveredMethods)
-			stringBuffer.append("\t"+coveredMethod.toString());
-		stringBuffer.append("Date: "+date.toString()+"\n");
-		return stringBuffer.toString();
 	}
 
 }

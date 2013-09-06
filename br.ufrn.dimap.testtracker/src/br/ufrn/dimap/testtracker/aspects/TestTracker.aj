@@ -24,6 +24,7 @@ import br.ufrn.dimap.testtracker.data.CoveredMethod;
 import br.ufrn.dimap.testtracker.data.Input;
 import br.ufrn.dimap.testtracker.data.TestCoverage;
 import br.ufrn.dimap.testtracker.data.TestCoverageMapping;
+import br.ufrn.dimap.testtracker.data.TestData;
 import br.ufrn.dimap.testtracker.util.FileUtil;
 
 public aspect TestTracker {
@@ -111,19 +112,23 @@ public aspect TestTracker {
 			if(isTestClassMember(member) || isManagedBeanMember(member)){
 				testCoverage = new TestCoverage();
 				if(isTestMethod(member) || isActionMethod(member)) {
-					testCoverage.setSignature(signature.toString());
-					testCoverage.setClassFullName(member.getDeclaringClass().getCanonicalName()); //TODO: Verificar se é realmente esta String que procuro (deve ser o nome da classe com o pacote)
-					testCoverage.setManual(!isTestClassMember(member) && isManagedBeanMember(member));
+					TestData testData = testCoverage.getTestData();
+					testData.setSignature(signature.toString());
+					testData.setClassFullName(member.getDeclaringClass().getCanonicalName()); //TODO: Verificar se é realmente esta String que procuro (deve ser o nome da classe com o pacote)
+					testData.setManual(!isTestClassMember(member) && isManagedBeanMember(member));
+					testCoverage.setTestData(testData); //TODO: é realmente necessário setar o testData ou o objeto já está lá?
 				}
 				testCoverage.addCoveredMethod(signature.toString(), getInputs(member, thisJoinPoint.getArgs()));
 				TestCoverageMapping.getInstance().getTestsCoverageBuilding().put(threadId, testCoverage);
 			}
 		}
 		else{
-			if(testCoverage.getSignature().isEmpty() && ((!testCoverage.isManual() && isTestMethod(member)) || (testCoverage.isManual() && isActionMethod(member)))) {
-				testCoverage.setSignature(signature.toString());
-				testCoverage.setClassFullName(member.getDeclaringClass().getCanonicalName());
-				testCoverage.setManual(!isTestClassMember(member) && isManagedBeanMember(member));
+			TestData testData = testCoverage.getTestData();
+			if(testData.getSignature().isEmpty() && ((!testData.isManual() && isTestMethod(member)) || (testData.isManual() && isActionMethod(member)))) {
+				testData.setSignature(signature.toString());
+				testData.setClassFullName(member.getDeclaringClass().getCanonicalName());
+				testData.setManual(!isTestClassMember(member) && isManagedBeanMember(member));
+				testCoverage.setTestData(testData); //TODO: é realmente necessário setar o testData ou o objeto já está lá?
 			}
 			testCoverage.addCoveredMethod(signature.toString(), getInputs(member, thisJoinPoint.getArgs()));
 		}
@@ -135,9 +140,10 @@ public aspect TestTracker {
 		Member member = getMember(signature);
 		TestCoverage testCoverage = TestCoverageMapping.getInstance().getOpenedTestCoverage(threadId);
 		if(testCoverage != null){
-			if(((!testCoverage.isManual() && isTestClassMember(member)) ||
-			(testCoverage.isManual() && isManagedBeanMember(member) && isActionMethod(member))) &&
-			testCoverage.getSignature().equals(signature.toString())){
+			TestData testData = testCoverage.getTestData();
+			if(((!testData.isManual() && isTestClassMember(member)) ||
+			(testData.isManual() && isManagedBeanMember(member) && isActionMethod(member))) &&
+			testData.getSignature().equals(signature.toString())){
 				TestCoverageMapping.getInstance().finishTestCoverage(threadId);
 				Integer testCount = TestCoverageMapping.getInstance().getTestCount();
 				Integer testClassesSize = FileUtil.getTestClassesSizeByResource(member.getDeclaringClass());
@@ -246,7 +252,7 @@ public aspect TestTracker {
 	}
 
 	private void printTestCoverage(TestCoverage testCoverage) {
-		System.out.println("TestCoverage "+testCoverage.getIdTest()+": "+testCoverage.getSignature());
+		System.out.println("TestCoverage "+testCoverage.getIdTest()+": "+testCoverage.getTestData().getSignature());
 		System.out.println("MethodDatas:");
 		for (CoveredMethod coveredMethod : testCoverage.getCoveredMethods()) {
 			System.out.print("\t"+coveredMethod.getMethodData().getSignature());

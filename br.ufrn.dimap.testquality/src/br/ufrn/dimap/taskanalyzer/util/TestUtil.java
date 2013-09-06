@@ -52,6 +52,8 @@ public class TestUtil {
 	}
 	
 	public static Float getSafeMeasure(Set<TestCoverage> selectedTests, Set<TestCoverage> idealTests) {
+		if(idealTests.size() == 0)
+			return new Float(1);
 		Set<TestCoverage> intersection = getIntersection(selectedTests, idealTests);
 		return (new Float(intersection.size()))/(new Float(idealTests.size()));
 	}
@@ -60,7 +62,6 @@ public class TestUtil {
 		Set<TestCoverage> intersection = new HashSet<TestCoverage>(selectedTests.size()+idealTests.size());
 		intersection.addAll(selectedTests);
 		intersection.addAll(idealTests);
-		selectedTests.iterator().next().equals(idealTests.iterator().next());
 		
 		Set<TestCoverage> set2 = new HashSet<TestCoverage>(selectedTests);
 		set2.removeAll(idealTests);

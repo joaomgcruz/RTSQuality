@@ -86,11 +86,14 @@ public class SampleAction implements IWorkbenchWindowActionDelegate {
 			"TestTracker",
 			"Hello, Eclipse world");
 		List<Task> tasks = new ArrayList<Task>(1);
-		Task task = new Task(1, new ArrayList<Revision>(1), Task.REFACTOR);
-		task.getRevisions().add(new Revision(136,task));
-		tasks.add(task);
+		Task task1 = new Task(1, new ArrayList<Revision>(1), Task.REFACTOR);
+//		Task task2 = new Task(1, new ArrayList<Revision>(1), Task.CORRECTION);
+		task1.getRevisions().add(new Revision(151,task1));
+//		task2.getRevisions().add(new Revision(138,task2));
+		tasks.add(task1);
+//		tasks.add(task2);
 		
-		SVNConfig sVNConfig = new SVNConfig("http://scenario-analyzer.googlecode.com/svn/trunk","/Calculadora","","");
+		SVNConfig sVNConfig = new SVNConfig("http://scenario-analyzer.googlecode.com/svn/trunk","/Exemplo","","");
 		RegressionTestTechnique regressionTestTechnique = new DiffRegressionTest();
 		passo0(tasks,sVNConfig,regressionTestTechnique);
 	}

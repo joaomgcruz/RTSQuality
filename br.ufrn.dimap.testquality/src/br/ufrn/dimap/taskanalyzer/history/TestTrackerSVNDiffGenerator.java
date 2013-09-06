@@ -589,6 +589,7 @@ public class TestTrackerSVNDiffGenerator implements ISVNDiffGenerator {
             TestTrackerDiffUniGenerator generator = new TestTrackerDiffUniGenerator(properties, header);
             Writer writer = new OutputStreamWriter(result, getEncoding());
             QDiffManager.generateTextDiff(is1, is2, getEncoding(), writer, generator);
+            writer.write(getFooter());
             writer.flush();
         } catch (IOException e) {
             SVNErrorMessage err = SVNErrorMessage.create(SVNErrorCode.IO_ERROR, e.getMessage());
@@ -828,6 +829,16 @@ public class TestTrackerSVNDiffGenerator implements ISVNDiffGenerator {
     	os.write("      <changedLines>".getBytes(getEncoding()));
     	os.write(getEOL());
     }
+
+	protected String getFooter() throws IOException {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		bos.write("      </changedLines>".getBytes(getEncoding()));
+		bos.write(getEOL());
+		bos.write("    </br.ufrn.dimap.taskanalyzer.history.ClassUpdates>".getBytes(getEncoding()));
+		bos.write(getEOL());
+		bos.close();
+		return bos.toString(getEncoding());
+	}
     
     protected boolean isHeaderForced(File file1, File file2) {
         return (file1 == null && file2 != null);
