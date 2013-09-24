@@ -5,6 +5,7 @@ package br.ufrn.dimap.testtracker.data;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -48,10 +49,25 @@ public class TestCoverage implements Comparable<TestCoverage>, Serializable {
 		this.testData = testData;
 	}
 
-	public void addCoveredMethod(String methodSignature, LinkedHashSet<Input> inputs) {
+	public void addCoveredMethod(String methodSignature, LinkedHashSet<Variable> inputs) {
 		MethodData methodData = TestCoverageMapping.getInstance().findOrCreateMethodData(methodSignature);
 		methodData.getTestsCoverage().add(this);
-		coveredMethods.add(new CoveredMethod(methodData, inputs));
+		coveredMethods.add(new CoveredMethod(methodData, null, inputs));
+	}
+
+	public void updateCoveredMethod(String methodSignature, Variable theReturn) { //TODO: Verificar se ocorrem erros quando na existência de um método recursivo que receba os mesmos parâmetros de entrada que o seu antecessor
+		if(theReturn == null)
+			return;
+		MethodData methodData = TestCoverageMapping.getInstance().findOrCreateMethodData(methodSignature);
+		if(methodData.getTestsCoverage().contains(this)){
+			CoveredMethod array[] = coveredMethods.toArray(new CoveredMethod[0]);
+			for(int i=coveredMethods.size()-1;i>=0;i--) {
+				if(array[i].getMethodData().equals(methodData) && array[i].getTheReturn() == null) {
+					array[i].setTheReturn(theReturn);
+					break;
+				}
+			}
+		}
 	}
 	
 	public LinkedHashSet<CoveredMethod> getCoveredMethods() {

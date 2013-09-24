@@ -11,7 +11,6 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
 
 import br.ufrn.dimap.testtracker.data.Revision;
-import br.ufrn.dimap.testtracker.data.TestCoverage;
 import br.ufrn.dimap.testtracker.util.FileUtil;
 
 public class TestUtil {
@@ -46,44 +45,51 @@ public class TestUtil {
 		return "C:/";
 	}
 
-	public static void metricMeansurement(Set<TestCoverage> selectedTests, Set<TestCoverage> allTests, Set<TestCoverage> idealTests, Revision revision){
-		revision.setSecurity(getSafeMeasure(selectedTests, idealTests));
-		revision.setPrecision(getPrecisionMeasure(selectedTests, idealTests, allTests));
+	public static void metricMeansurement(Set<String> selectionCoveredModifications, Set<String> idealCoveredModifications, Set<String> allCoveredModifications, Revision revision){
+		revision.setSecurity(getSafeMeasure(selectionCoveredModifications, idealCoveredModifications));
+		revision.setPrecision(getPrecisionMeasure(selectionCoveredModifications, idealCoveredModifications, allCoveredModifications));
+		printRevision(revision);
 	}
 	
-	public static Float getSafeMeasure(Set<TestCoverage> selectedTests, Set<TestCoverage> idealTests) {
-		if(idealTests.size() == 0)
+	private static void printRevision(Revision revision) {
+		System.out.println("Revision: "+revision.getId());
+		System.out.println("\tSecurity: "+revision.getSecurity());
+		System.out.println("\tPrecision: "+revision.getPrecision());
+	}
+	
+	public static Float getSafeMeasure(Set<String> selectionCoveredModifications, Set<String> idealCoveredModifications) {
+		if(idealCoveredModifications.size() == 0)
 			return new Float(1);
-		Set<TestCoverage> intersection = getIntersection(selectedTests, idealTests);
-		return (new Float(intersection.size()))/(new Float(idealTests.size()));
+		Set<String> intersection = getIntersection(selectionCoveredModifications, idealCoveredModifications);
+		return (new Float(intersection.size()))/(new Float(idealCoveredModifications.size()));
 	}
 
-	private static Set<TestCoverage> getIntersection(Set<TestCoverage> selectedTests, Set<TestCoverage> idealTests) {
-		Set<TestCoverage> intersection = new HashSet<TestCoverage>(selectedTests.size()+idealTests.size());
-		intersection.addAll(selectedTests);
-		intersection.addAll(idealTests);
+	private static Set<String> getIntersection(Set<String> selectionCoveredModifications, Set<String> idealCoveredModifications) {
+		Set<String> intersection = new HashSet<String>(selectionCoveredModifications.size()+idealCoveredModifications.size());
+		intersection.addAll(selectionCoveredModifications);
+		intersection.addAll(idealCoveredModifications);
 		
-		Set<TestCoverage> set2 = new HashSet<TestCoverage>(selectedTests);
-		set2.removeAll(idealTests);
+		Set<String> set2 = new HashSet<String>(selectionCoveredModifications);
+		set2.removeAll(idealCoveredModifications);
 		
-		Set<TestCoverage> set3 = new HashSet<TestCoverage>(idealTests);
-		set3.removeAll(selectedTests);
+		Set<String> set3 = new HashSet<String>(idealCoveredModifications);
+		set3.removeAll(selectionCoveredModifications);
 		
 		set2.addAll(set3);
 		intersection.removeAll(set2);
 		return intersection;
 	}
 	
-	public static Float getPrecisionMeasure(Set<TestCoverage> selectedTests, Set<TestCoverage> idealTests, Set<TestCoverage> allTests){
-		Set<TestCoverage> inverseSelectedTests = new HashSet<TestCoverage>(allTests);
-		inverseSelectedTests.removeAll(selectedTests);
+	public static Float getPrecisionMeasure(Set<String> selectionCoveredModifications, Set<String> idealCoveredModifications, Set<String> allCoveredModifications){
+		Set<String> inverseSelectedTests = new HashSet<String>(allCoveredModifications);
+		inverseSelectedTests.removeAll(selectionCoveredModifications);
 		
-		Set<TestCoverage> inverseIdealTests = new HashSet<TestCoverage>(allTests);
-		inverseIdealTests.removeAll(idealTests);
+		Set<String> inverseIdealTests = new HashSet<String>(allCoveredModifications);
+		inverseIdealTests.removeAll(idealCoveredModifications);
 		if(inverseIdealTests.size() == 0)
 			return new Float(1);
 		
-		Set<TestCoverage> intersection = getIntersection(inverseSelectedTests, inverseIdealTests);
+		Set<String> intersection = getIntersection(inverseSelectedTests, inverseIdealTests);
 		return (new Float(intersection.size()))/(new Float(inverseIdealTests.size()));
 	}
 	

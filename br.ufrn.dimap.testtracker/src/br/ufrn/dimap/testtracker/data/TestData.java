@@ -7,13 +7,13 @@ public class TestData implements Serializable {
 	
 	private String signature;
 	private String classFullName;
-	private LinkedHashSet<Input> inputs;
+	private LinkedHashSet<Variable> inputs;
 	private boolean manual;
 	
 	public TestData() {
 		this.signature = new String();
 		this.classFullName = new String();
-		this.inputs = new LinkedHashSet<Input>();
+		this.inputs = new LinkedHashSet<Variable>();
 		this.manual = false;
 	}
 
@@ -33,7 +33,7 @@ public class TestData implements Serializable {
 		this.classFullName = classFullName;
 	}
 
-	public LinkedHashSet<Input> getInputs() {
+	public LinkedHashSet<Variable> getInputs() {
 		return inputs;
 	}
 

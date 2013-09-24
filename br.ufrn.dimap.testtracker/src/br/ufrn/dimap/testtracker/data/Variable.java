@@ -1,30 +1,20 @@
 package br.ufrn.dimap.testtracker.data;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-public class Input implements Serializable {
+import br.ufrn.dimap.testtracker.util.ObjectUtil;
+
+public class Variable implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private String type;
 	private String name;
 	private Object value;
 	
-	public Input(String type, String name, Object value) {
+	public Variable(String type, String name, Object value) {
 		this.type = type;
 		this.name = name;
-		this.value = isSerializable(value);
-	}
-	
-	private Object isSerializable(Object object) {
-		try {
-			new ObjectOutputStream(new ByteArrayOutputStream()).writeObject(object);
-			return object;
-		} catch (IOException e) {
-			return object.toString();
-		}
+		this.value = ObjectUtil.isSerializable(value);
 	}
 
 	public String getType() {
@@ -57,7 +47,7 @@ public class Input implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Input other = (Input) obj;
+		Variable other = (Variable) obj;
 		if (name == null) {
 			if (other.name != null)
 				return false;

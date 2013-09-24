@@ -821,7 +821,7 @@ public class TestTrackerSVNDiffGenerator implements ISVNDiffGenerator {
     	String fileDirectory = (new File("")).getAbsolutePath()+"\\temp\\"; //TODO: Encontrar o arquivo dentro do projeto, pois o checkout já foi feito
     	//TODO: Encontar uma forma de buscar todos os diffs no próprio projeto já feito checkout, ou fazer o diff antes do checkout, caso não haja diff o checkout pode baixar apenas os arquivos que sofreram modificação, evitando baixar arquivos com redundância
     	FileUtil.saveTextToFile(readFile(file1), fileDirectory+(rev1.substring(1, rev1.length()-1)), file2.getName(), "");
-    	os.write(("      <classSourceCode1>"+fileDirectory+(rev1.substring(1, rev1.length()-1))+"\\"+file2.getName()+"</classSourceCode1>").getBytes(getEncoding()));
+    	os.write(("      <classSourceCode1>"+(rev1.substring(rev1.lastIndexOf(' ')+1,rev1.length()-1).equals("0") ? "null" : fileDirectory+(rev1.substring(1, rev1.length()-1))+"\\"+file2.getName())+"</classSourceCode1>").getBytes(getEncoding()));
     	os.write(getEOL());
     	FileUtil.saveTextToFile(readFile(file2), fileDirectory+(rev2.substring(1, rev2.length()-1)), "_"+file2.getName(), "");
     	os.write(("      <classSourceCode2>"+fileDirectory+(rev2.substring(1, rev2.length()-1))+"\\"+"_"+file2.getName()+"</classSourceCode2>").getBytes(getEncoding()));

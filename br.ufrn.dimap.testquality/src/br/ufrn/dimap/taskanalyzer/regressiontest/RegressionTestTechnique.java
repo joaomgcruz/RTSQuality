@@ -1,5 +1,6 @@
 package br.ufrn.dimap.taskanalyzer.regressiontest;
 
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
@@ -15,6 +16,7 @@ public abstract class RegressionTestTechnique { //TODO: em algumas situações s
 	
 	public abstract Set<TestCoverage> executeRegression();
 	public abstract void setConfiguration(Object args[]) throws Exception;
+	public abstract Set<String> getCoveredModifiedMethods();
 
 	public Revision getRevision() {
 		return revision;

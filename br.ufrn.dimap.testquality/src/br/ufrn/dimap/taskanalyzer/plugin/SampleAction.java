@@ -88,7 +88,7 @@ public class SampleAction implements IWorkbenchWindowActionDelegate {
 		List<Task> tasks = new ArrayList<Task>(1);
 		Task task1 = new Task(1, new ArrayList<Revision>(1), Task.REFACTOR);
 //		Task task2 = new Task(1, new ArrayList<Revision>(1), Task.CORRECTION);
-		task1.getRevisions().add(new Revision(151,task1));
+		task1.getRevisions().add(new Revision(154,task1));
 //		task2.getRevisions().add(new Revision(138,task2));
 		tasks.add(task1);
 //		tasks.add(task2);
@@ -135,20 +135,20 @@ public class SampleAction implements IWorkbenchWindowActionDelegate {
 					regressionTestTechnique.setIProject(iProject);
 					IProject oldIProject = ProjectUtil.getIProject(sVNConfig, revision.getOldRevision());
 					TestCoverageMapping oldTestCoverageMapping = ProjectUtil.getTestCoverageMapping(oldIProject,"AllTests");
-					Set<TestCoverage> allTests = oldTestCoverageMapping.getTestCoverages();
+					Set<String> allCoveredModifications = oldTestCoverageMapping.getMethodPool().keySet();
 					Object configurations[] = {oldTestCoverageMapping};
 					regressionTestTechnique.setConfiguration(configurations);
 					Set<String> modifiedMethods = history.getChangedMethodsSignatures(revision);
 					regressionTestTechnique.setModifiedMethods(modifiedMethods);
 					//TODO: identificar porque a lista selectedTests está vazia
-					Set<TestCoverage> selectedTests = regressionTestTechnique.executeRegression();
+					Set<String> selectionCoveredModifications = regressionTestTechnique.getCoveredModifiedMethods();
 //					TestUtil.executeTests(iProjectClassLoader, selectedTests, "SelectedTests"); //TODO: para acrescentar esta execução deveria primeiro limpar o TestCoverageMapping
 					
 					ClassLoader iProjectClassLoader = ProjectUtil.getIProjectClassLoader(iProject);
 					TestUtil.executeTests(iProjectClassLoader, ProjectUtil.getAllTestClasses(iProject), "AllTests");
 					TestCoverageMapping testCoverageMapping = ProjectUtil.getTestCoverageMapping(iProject,"AllTests");
-					Set<TestCoverage> idealSelection = testCoverageMapping.getTestsCoverageByChangedMethodsSignatures(modifiedMethods);
-					TestUtil.metricMeansurement(selectedTests, allTests, idealSelection, revision);
+					Set<String> idealCoveredModifications = testCoverageMapping.getCoveredModifiedMethods(modifiedMethods);
+					TestUtil.metricMeansurement(selectionCoveredModifications, idealCoveredModifications, allCoveredModifications, revision);
 				} catch(Exception e) {
 					e.printStackTrace();
 				}

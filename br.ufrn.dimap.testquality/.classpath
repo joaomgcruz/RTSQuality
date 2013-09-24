@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="lib/testtracker.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/testtracker.jar" sourcepath="/br.ufrn.dimap.testtracker"/>
 	<classpathentry exported="true" kind="lib" path="lib/kxml2-2.3.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/kxml2-min-2.3.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre7"/>

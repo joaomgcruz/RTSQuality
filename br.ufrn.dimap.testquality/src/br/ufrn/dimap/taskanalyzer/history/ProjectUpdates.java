@@ -31,13 +31,15 @@ public class ProjectUpdates {
 					addedLines.add(updatedLine);
 				}
 			}
-			File oldFile = new File(classUpdate.getClassSourceCode1());
-			MethodLimitBuilder mLBOld = new MethodLimitBuilder(FileUtil.loadTextFromFile(oldFile));
-			List<MethodLimit> oldLimits = mLBOld.getMethodLimits();
+			if(!classUpdate.getClassSourceCode1().equals("null")) {
+				File oldFile = new File(classUpdate.getClassSourceCode1());
+				MethodLimitBuilder mLBOld = new MethodLimitBuilder(FileUtil.loadTextFromFile(oldFile));
+				List<MethodLimit> oldLimits = mLBOld.getMethodLimits();
+				updatedMethods.addAll(ChangedAssetsMinerUtil.filterChangedMethods(oldLimits, removedLines));
+			}
 			File newFile = new File(classUpdate.getClassSourceCode2());
 			MethodLimitBuilder mLBNew = new MethodLimitBuilder(FileUtil.loadTextFromFile(newFile));
 			List<MethodLimit> newLimits = mLBNew.getMethodLimits();
-			updatedMethods.addAll(ChangedAssetsMinerUtil.filterChangedMethods(oldLimits, removedLines));
 			updatedMethods.addAll(ChangedAssetsMinerUtil.filterChangedMethods(newLimits, addedLines));
 		}
 		return updatedMethods;

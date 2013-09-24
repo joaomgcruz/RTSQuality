@@ -1,6 +1,8 @@
 package br.ufrn.dimap.taskanalyzer.regressiontest;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import br.ufrn.dimap.testtracker.data.Revision;
@@ -19,6 +21,13 @@ public class DiffRegressionTest extends RegressionTestTechnique {
 		if(modifiedMethods != null)
 			return oldTestCoverageMapping.getTestsCoverageByChangedMethodsSignatures(modifiedMethods);
 		return new HashSet<TestCoverage>(0);
+	}
+	
+	@Override
+	public Set<String> getCoveredModifiedMethods() {
+		if(modifiedMethods != null)
+			return oldTestCoverageMapping.getCoveredModifiedMethods(modifiedMethods);
+		return new HashSet<String>(0);
 	}
 	
 	@Override

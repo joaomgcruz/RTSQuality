@@ -75,6 +75,15 @@ public class TestCoverageMapping implements Serializable {
 		return testsCoverage;
 	}
 	
+	public Set<String> getCoveredModifiedMethods(Set<String> modifiedMethods) {
+		Set<String> coveredModifiedMethods = new HashSet<String>(0);
+		for(String modifiedMethod : modifiedMethods) {
+			if(methodPool.containsKey(modifiedMethod))
+				coveredModifiedMethods.add(modifiedMethod);
+		}
+		return coveredModifiedMethods;
+	}
+	
 	public Set<String> getTestsFullyQuilifiedNames() {
 		Set<String> fullyQuilifiedNames = new HashSet<String>(testCoverages.size());
 		for(TestCoverage testCoverage : testCoverages)

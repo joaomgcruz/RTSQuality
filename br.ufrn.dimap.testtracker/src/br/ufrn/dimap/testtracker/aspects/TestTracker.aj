@@ -21,7 +21,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.junit.Test;
 
 import br.ufrn.dimap.testtracker.data.CoveredMethod;
-import br.ufrn.dimap.testtracker.data.Input;
+import br.ufrn.dimap.testtracker.data.Variable;
 import br.ufrn.dimap.testtracker.data.TestCoverage;
 import br.ufrn.dimap.testtracker.data.TestCoverageMapping;
 import br.ufrn.dimap.testtracker.data.TestData;
@@ -124,7 +124,7 @@ public aspect TestTracker {
 		}
 		else{
 			TestData testData = testCoverage.getTestData();
-			if(testData.getSignature().isEmpty() && ((!testData.isManual() && isTestMethod(member)) || (testData.isManual() && isActionMethod(member)))) {
+			if(testData.getSignature().isEmpty() && (isTestMethod(member) || isActionMethod(member))) {
 				testData.setSignature(signature.toString());
 				testData.setClassFullName(member.getDeclaringClass().getCanonicalName());
 				testData.setManual(!isTestClassMember(member) && isManagedBeanMember(member));
@@ -132,6 +132,15 @@ public aspect TestTracker {
 			}
 			testCoverage.addCoveredMethod(signature.toString(), getInputs(member, thisJoinPoint.getArgs()));
 		}
+	}
+	
+	after() returning(Object theReturn) : beforeExecutions() {
+		Long threadId = Thread.currentThread().getId();
+		Signature signature = thisJoinPoint.getSignature();
+		Member member = getMember(signature);
+		TestCoverage testCoverage = TestCoverageMapping.getInstance().getOpenedTestCoverage(threadId);
+		if(testCoverage != null)
+			testCoverage.updateCoveredMethod(signature.toString(), getReturn(member, theReturn));
 	}
 	
 	after() : afterExecutions() {
@@ -227,15 +236,21 @@ public aspect TestTracker {
 //		}
 //	}
 	
-	private LinkedHashSet<Input> getInputs(Member member, Object[] args){
+	private LinkedHashSet<Variable> getInputs(Member member, Object[] args){
 		Class<?>[] types = getParameterTypes(member);
 		String name = member.getDeclaringClass().getName()+"."+member.getName()+"."+"arg";
-		LinkedHashSet<Input> inputs = new LinkedHashSet<Input>();
+		LinkedHashSet<Variable> inputs = new LinkedHashSet<Variable>();
 		if(types.length == args.length){
 			for(int i=0;i<args.length;i++)
-				inputs.add(new Input(types[i].getName(),name+i,args[i]));
+				inputs.add(new Variable(types[i].getName(),name+i,args[i]));
 		}
 		return inputs;
+	}
+	
+	private Variable getReturn(Member member, Object theReturnObject){
+		Class<?> type = getReturnType(member);
+		String name = member.getDeclaringClass().getName()+"."+member.getName()+"."+"return";
+		return new Variable(type.getName(),name,theReturnObject);
 	}
 	
 	/**
@@ -250,18 +265,29 @@ public aspect TestTracker {
 			types = ((Constructor) member).getParameterTypes();
 		return types;
 	}
+	
+	/**
+	 * @param member
+	 * @return
+	 */
+	private Class<?> getReturnType(Member member) {
+		Class<?> type = null; 
+		if(member instanceof Method)
+			type = ((Method) member).getReturnType();
+		return type;
+	}
 
 	private void printTestCoverage(TestCoverage testCoverage) {
 		System.out.println("TestCoverage "+testCoverage.getIdTest()+": "+testCoverage.getTestData().getSignature());
 		System.out.println("MethodDatas:");
 		for (CoveredMethod coveredMethod : testCoverage.getCoveredMethods()) {
-			System.out.print("\t"+coveredMethod.getMethodData().getSignature());
+			String returnString = ((coveredMethod.getTheReturn() == null || coveredMethod.getTheReturn().getValue() == null) ? "" : "("+coveredMethod.getTheReturn().getValue().toString()+") -> ");
 			String inputString = " <- (";
-			for(Input input : coveredMethod.getInputs()){
+			for(Variable input : coveredMethod.getInputs()){
 				inputString += input.getValue().toString()+", ";
 			}
 			inputString = coveredMethod.getInputs().size() == 0 ? "" : inputString.substring(0,inputString.length()-2)+")";
-			System.out.println(inputString);
+			System.out.println("\t"+returnString+coveredMethod.getMethodData().getSignature()+inputString);
 		}
 		System.out.println("\n---------------------------------------------------------------\n");
 	}
