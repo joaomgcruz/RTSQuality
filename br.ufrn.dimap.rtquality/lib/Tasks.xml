@@ -1,0 +1,14 @@
+<list>
+  <br.ufrn.dimap.ttracker.data.Task>
+    <id>121273</id>
+    <type>VERIFICACAO</type>
+    <revisions>
+      <br.ufrn.dimap.ttracker.data.Revision>
+        <id>154353</id>
+      </br.ufrn.dimap.ttracker.data.Revision>
+      <br.ufrn.dimap.ttracker.data.Revision>
+        <id>154204</id>
+      </br.ufrn.dimap.ttracker.data.Revision>
+    </revisions>
+  </br.ufrn.dimap.ttracker.data.Task>
+</list>
